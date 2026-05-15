@@ -441,6 +441,9 @@ function drawEvacuationRoutes(rainfall) {
         `, { maxWidth: 240 });
 
         routeLayers.push(glowLine, routeLine, originMarker, destMarker);
+    });
+}
+
 // ---- Flood Visualization (A-F: Complete overhaul) ----
 let gridLayer = null;
 let contourLayer = null;
