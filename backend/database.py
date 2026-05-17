@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/floodguard")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/floodguard")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

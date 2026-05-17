@@ -5,8 +5,9 @@ from database import Base
 class FloodZone(Base):
     __tablename__ = "flood_zones"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    geom = Column(Geometry(geometry_type='POLYGON', srid=4326))
+    zone_name = Column(String(255), nullable=False)
+    elevation_m = Column(Float)
+    geom = Column(Geometry(geometry_type='POINT', srid=4326))
 
 class PPSLocation(Base):
     __tablename__ = "pps_locations"
