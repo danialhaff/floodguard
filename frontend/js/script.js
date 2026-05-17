@@ -652,3 +652,146 @@ function updateChecklist(level) {
 }
 
 simulateFlood(0);
+
+// =============================================
+// Mobile Drawer (Bottom Sheet) Logic
+// =============================================
+(function () {
+    const fab        = document.getElementById('mobile-fab');
+    const drawer     = document.getElementById('mobile-drawer');
+    const overlay    = document.getElementById('mobile-overlay');
+    const closeBtn   = document.getElementById('drawer-close-btn');
+    const drawerBody = document.getElementById('drawer-content');
+
+    if (!fab || !drawer || !overlay || !drawerBody) return;
+
+    // --- Populate drawer with sidebar content ---
+    // We clone the desktop sidebar panels into the drawer so they share IDs
+    // and remain live (same DOM nodes, just moved).
+    function populateDrawer() {
+        if (drawerBody.children.length > 0) return; // already populated
+        const sidebar = document.querySelector('.sidebar');
+        if (!sidebar) return;
+        // Move children into the drawer
+        Array.from(sidebar.children).forEach(child => {
+            drawerBody.appendChild(child.cloneNode(true));
+        });
+
+        // Re-wire the cloned slider to drive the originals
+        const clonedSlider = drawerBody.querySelector('#rainfall-slider');
+        if (clonedSlider) {
+            // Give cloned elements unique IDs to avoid conflicts
+            clonedSlider.id = 'rainfall-slider-m';
+            const clonedValue  = drawerBody.querySelector('#rainfall-value');
+            const clonedBar    = drawerBody.querySelector('#rainfall-bar');
+            const clonedRisk   = drawerBody.querySelector('#risk-indicator');
+            const clonedLevel  = drawerBody.querySelector('#risk-level');
+            const clonedIcon   = drawerBody.querySelector('#risk-icon');
+            const clonedList   = drawerBody.querySelector('#checklist');
+            if (clonedValue)  clonedValue.id  = 'rainfall-value-m';
+            if (clonedBar)    clonedBar.id    = 'rainfall-bar-m';
+            if (clonedRisk)   clonedRisk.id   = 'risk-indicator-m';
+            if (clonedLevel)  clonedLevel.id  = 'risk-level-m';
+            if (clonedIcon)   clonedIcon.id   = 'risk-icon-m';
+            if (clonedList)   clonedList.id   = 'checklist-m';
+
+            // Sync cloned slider value with main slider value on open
+            clonedSlider.value = slider.value;
+            if (clonedValue) clonedValue.textContent = slider.value;
+            if (clonedBar)   clonedBar.style.width = (Number(slider.value) / 200 * 100) + '%';
+
+            // Mirror risk state
+            const mainRisk = document.getElementById('risk-indicator');
+            if (clonedRisk && mainRisk) {
+                clonedRisk.setAttribute('data-risk', mainRisk.getAttribute('data-risk') || 'safe');
+            }
+            if (clonedLevel) clonedLevel.textContent = riskLevelSpan.textContent;
+            if (clonedIcon)  clonedIcon.textContent  = riskIcon.textContent;
+            if (clonedList)  clonedList.innerHTML     = checklist.innerHTML;
+
+            clonedSlider.addEventListener('input', function () {
+                const val = Number(this.value);
+                // Update cloned display
+                if (clonedValue) clonedValue.textContent = val;
+                if (clonedBar)   clonedBar.style.width   = (val / 200 * 100) + '%';
+                // Also update the main (hidden) slider so state is consistent
+                slider.value = val;
+                rainfallBar.style.width = (val / 200 * 100) + '%';
+                sliderValue.textContent = val;
+                simulateFlood(val);
+                // Keep cloned risk in sync (simulateFlood updates originals)
+                setTimeout(() => {
+                    const mainRisk = document.getElementById('risk-indicator');
+                    if (clonedRisk && mainRisk) {
+                        clonedRisk.setAttribute('data-risk', mainRisk.getAttribute('data-risk') || 'safe');
+                    }
+                    if (clonedLevel) clonedLevel.textContent = riskLevelSpan.textContent;
+                    if (clonedIcon)  clonedIcon.textContent  = riskIcon.textContent;
+                    if (clonedList)  clonedList.innerHTML     = checklist.innerHTML;
+                    updateFabLabel(riskLevelSpan.textContent);
+                }, 120);
+            });
+        }
+    }
+
+    function updateFabLabel(risk) {
+        const label = fab.querySelector('span') || fab;
+        // Update aria-label only — visual label stays concise
+        fab.setAttribute('aria-label', `Open controls — Risk: ${risk}`);
+    }
+
+    // --- Open / Close ---
+    function openDrawer() {
+        populateDrawer();
+        overlay.classList.add('active');
+        drawer.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        fab.style.opacity = '0';
+        fab.style.pointerEvents = 'none';
+    }
+
+    function closeDrawer() {
+        overlay.classList.remove('active');
+        drawer.classList.remove('active');
+        document.body.style.overflow = '';
+        fab.style.opacity = '1';
+        fab.style.pointerEvents = '';
+    }
+
+    fab.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    // --- Swipe-down to dismiss ---
+    let touchStartY = 0;
+    let drawerStartTranslate = 0;
+
+    drawer.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        drawerStartTranslate = 0;
+        drawer.style.transition = 'none';
+    }, { passive: true });
+
+    drawer.addEventListener('touchmove', (e) => {
+        const dy = e.touches[0].clientY - touchStartY;
+        if (dy > 0) {
+            drawer.style.transform = `translateY(${dy}px)`;
+        }
+    }, { passive: true });
+
+    drawer.addEventListener('touchend', (e) => {
+        drawer.style.transition = '';
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (dy > 100) {
+            closeDrawer();
+            drawer.style.transform = '';
+        } else {
+            drawer.style.transform = '';
+        }
+    });
+
+    // --- Keyboard dismiss ---
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('active')) closeDrawer();
+    });
+})();
