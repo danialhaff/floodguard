@@ -403,6 +403,7 @@ body {
     border-radius: var(--radius);
     overflow: hidden;
     backdrop-filter: blur(20px);
+    position: relative;            /* anchor for mobile legend toggle */
 }
 
 .map-chrome-top {
@@ -630,9 +631,13 @@ body {
     z-index: 500;
     backdrop-filter: blur(4px);
     opacity: 0;
+    pointer-events: none;          /* FIX: don't block map touches when hidden */
     transition: opacity 0.3s ease;
 }
-.mobile-overlay.active { opacity: 1; }
+.mobile-overlay.active {
+    opacity: 1;
+    pointer-events: auto;          /* only intercept touches when actually visible */
+}
 
 /* ---- Mobile Drawer (Bottom Sheet) ---- */
 .mobile-drawer {
@@ -738,16 +743,13 @@ body {
     .app-main { gap: 0; }
     #map { min-height: 0; }
 
-    /* Legend compact on mobile */
-    .map-legend {
-        padding: 10px 12px;
-        font-size: 0.68rem;
-        min-width: 140px;
-        bottom: 80px !important;
+    /* Hide obstructive Leaflet legend on mobile */
+    .map-legend { display: none !important; }
+
+    /* Mobile legend toggle pill */
+    .mobile-legend-toggle {
+        display: flex !important;
     }
-    .legend-title { font-size: 0.75rem; }
-    .legend-item { font-size: 0.65rem; margin-bottom: 3px; }
-    .legend-item span { width: 14px; height: 10px; }
 
     /* Map chrome top badges collapse */
     .map-badges { gap: 4px; }
@@ -767,6 +769,83 @@ body {
 
     /* Checklist items more spacious for touch */
     .checklist li { padding: 12px 12px; }
+}
+
+/* ---- Mobile Legend Toggle (pill button on map) ---- */
+.mobile-legend-toggle {
+    display: none;            /* hidden on desktop, shown on mobile via @media above */
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background: rgba(12,17,32,0.88);
+    border: 1px solid var(--border-glow);
+    border-radius: 20px;
+    font-family: var(--font);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+    user-select: none;
+}
+.mobile-legend-toggle:active { background: rgba(99,102,241,0.2); color: var(--text-primary); }
+.mobile-legend-toggle svg { flex-shrink: 0; }
+
+/* ---- Mobile Legend Popup ---- */
+.mobile-legend-popup {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    background: rgba(10,15,28,0.97);
+    border: 1px solid var(--border-glow);
+    border-radius: 14px;
+    padding: 14px 16px;
+    min-width: 200px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    backdrop-filter: blur(20px);
+    font-family: var(--font);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    transform-origin: bottom left;
+    animation: legend-pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    z-index: 9990;
+}
+@keyframes legend-pop {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+}
+.mobile-legend-popup .legend-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.mobile-legend-popup .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+    font-size: 0.7rem;
+    color: #cbd5e1;
+}
+.mobile-legend-popup .legend-item span {
+    display: inline-block;
+    width: 16px; height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.mobile-legend-popup .legend-divider {
+    border-top: 1px solid rgba(100,120,180,0.15);
+    margin: 8px 0;
+}
+.mobile-legend-popup .legend-note {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-style: italic;
 }
 
 /* ---- (E) Flood Water Shimmer Animation ---- */

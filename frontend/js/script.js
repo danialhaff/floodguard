@@ -795,3 +795,65 @@ simulateFlood(0);
         if (e.key === 'Escape' && drawer.classList.contains('active')) closeDrawer();
     });
 })();
+
+// =============================================
+// Mobile Legend Toggle
+// =============================================
+(function () {
+    const btn  = document.getElementById('mobile-legend-btn');
+    const wrap = document.getElementById('mobile-legend-wrap');
+    if (!btn || !wrap) return;
+
+    const LEGEND_HTML = `
+        <div class="mobile-legend-popup" id="mobile-legend-popup">
+            <div class="legend-title">🌊 Flood Level</div>
+            <div class="legend-item"><span style="background:#bfdbfe"></span> Very Low</div>
+            <div class="legend-item"><span style="background:#60a5fa"></span> Low</div>
+            <div class="legend-item"><span style="background:#2563eb"></span> Moderate</div>
+            <div class="legend-item"><span style="background:#1e3a8a"></span> High</div>
+            <div class="legend-item"><span style="background:#f97316"></span> Very High</div>
+            <div class="legend-item"><span style="background:#ef4444"></span> ⚠️ Danger</div>
+            <div class="legend-divider"></div>
+            <div class="legend-title">🚨 Evacuation Routes</div>
+            <div class="legend-item"><span style="background:#7c3aed"></span> North → Dewan MBSA</div>
+            <div class="legend-item"><span style="background:#0891b2"></span> East → SK Sri Muda</div>
+            <div class="legend-item"><span style="background:#059669"></span> Central → Dewan Azalea</div>
+            <div class="legend-item"><span style="background:#d97706"></span> South → SK Sek16</div>
+            <div class="legend-item"><span style="background:#be185d"></span> West → SK Sek16</div>
+            <div class="legend-note">Routes appear when rainfall &gt; 50mm</div>
+        </div>`;
+
+    let open = false;
+    let popup = null;
+
+    function openLegend() {
+        if (open) return;
+        open = true;
+        btn.setAttribute('aria-expanded', 'true');
+        wrap.insertAdjacentHTML('beforeend', LEGEND_HTML);
+        popup = document.getElementById('mobile-legend-popup');
+        // Close on outside tap
+        setTimeout(() => {
+            document.addEventListener('touchstart', outsideTap, { passive: true });
+            document.addEventListener('click', outsideTap);
+        }, 50);
+    }
+
+    function closeLegend() {
+        if (!open) return;
+        open = false;
+        btn.setAttribute('aria-expanded', 'false');
+        if (popup) { popup.remove(); popup = null; }
+        document.removeEventListener('touchstart', outsideTap);
+        document.removeEventListener('click', outsideTap);
+    }
+
+    function outsideTap(e) {
+        if (!wrap.contains(e.target)) closeLegend();
+    }
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        open ? closeLegend() : openLegend();
+    });
+})();
