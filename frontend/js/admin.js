@@ -50,7 +50,28 @@ async function fetchAPI(endpoint) {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return await res.json();
     } catch (error) {
-        console.error(`Fetch error for ${endpoint}:`, error);
+        console.warn(`Backend offline for ${endpoint}, using Mock Data for GitHub Pages...`);
+        
+        // MOCK DATA FALLBACK
+        if (endpoint === '/admin/stats') return { zones: 5, pps: 4, history: 5, system_status: "Operational (Mock Mode)" };
+        if (endpoint === '/admin/zones') return [
+            { id: 1, zone_name: "North Zone", elevation_m: 12.5 },
+            { id: 2, zone_name: "East Zone", elevation_m: 10.2 },
+            { id: 3, zone_name: "Central Zone", elevation_m: 8.7 },
+            { id: 4, zone_name: "South Zone", elevation_m: 9.1 },
+            { id: 5, zone_name: "West Zone", elevation_m: 11.3 }
+        ];
+        if (endpoint === '/admin/pps') return [
+            { id: 1, name: "Dewan Azalea Seksyen 25", capacity: 500 },
+            { id: 2, name: "SK Taman Sri Muda", capacity: 800 },
+            { id: 3, name: "Dewan MBSA Seksyen 28", capacity: 1200 },
+            { id: 4, name: "SK Seksyen 16", capacity: 1000 }
+        ];
+        if (endpoint === '/historical-data') return [
+            { date: "2021-12-17", rainfall_mm: 198.5, impact_description: "Major flood — entire TSM inundated" },
+            { date: "2021-12-18", rainfall_mm: 145.2, impact_description: "Continued flooding" },
+            { date: "2022-03-06", rainfall_mm: 92.0, impact_description: "Moderate flood" }
+        ];
         return null;
     }
 }

@@ -148,9 +148,16 @@
                     btn.textContent = 'Login';
                 }
             } catch(e) {
-                document.getElementById('error-msg').textContent = 'Server connection failed';
-                document.getElementById('error-msg').style.display = 'block';
-                btn.textContent = 'Login';
+                // FALLBACK ZERO-BACKEND UNTUK GITHUB PAGES
+                if (payload.username === 'admin' && payload.password === 'admin123') {
+                    console.warn("Backend API offline. Using Zero-Backend Mock Login.");
+                    sessionStorage.setItem('admin_token', 'mock-admin-token');
+                    window.location.href = 'admin.html';
+                } else {
+                    document.getElementById('error-msg').textContent = 'Invalid credentials (Mock)';
+                    document.getElementById('error-msg').style.display = 'block';
+                    btn.textContent = 'Login';
+                }
             }
         });
     </script>
