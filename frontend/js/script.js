@@ -611,6 +611,68 @@ slider.addEventListener('input', function () {
     simulateFlood(val);
 });
 
+// ---- Live Weather Mode ----
+const modeToggle = document.getElementById('mode-toggle');
+const labelSim = document.getElementById('label-sim');
+const labelLive = document.getElementById('label-live');
+const weatherWidget = document.getElementById('weather-widget');
+const wTemp = document.getElementById('weather-temp');
+const wCond = document.getElementById('weather-cond');
+const wRain = document.getElementById('weather-rain');
+const wUpdate = document.getElementById('weather-update');
+
+let liveInterval = null;
+
+if (modeToggle) {
+    modeToggle.addEventListener('change', function() {
+        if (this.checked) {
+            // Live Mode
+            labelSim.classList.remove('active');
+            labelLive.classList.add('active');
+            slider.disabled = true;
+            slider.style.opacity = '0.5';
+            weatherWidget.style.display = 'block';
+            fetchLiveWeather();
+            liveInterval = setInterval(fetchLiveWeather, 60000); // Poll every minute
+        } else {
+            // Sim Mode
+            labelLive.classList.remove('active');
+            labelSim.classList.add('active');
+            slider.disabled = false;
+            slider.style.opacity = '1';
+            weatherWidget.style.display = 'none';
+            if (liveInterval) clearInterval(liveInterval);
+            // Trigger sim with current slider
+            simulateFlood(slider.value);
+        }
+    });
+}
+
+async function fetchLiveWeather() {
+    try {
+        const res = await fetch(`${API_URL}/weather/live`);
+        const data = await res.json();
+        
+        // Update widget
+        if (wTemp) wTemp.textContent = `${data.temperature_c}°C`;
+        if (wCond) wCond.textContent = data.condition;
+        if (wRain) wRain.innerHTML = `Rain: <span>${data.rainfall_1h_mm} mm/h</span>`;
+        if (wUpdate) wUpdate.textContent = `Updated: ${data.timestamp}`;
+        
+        // Emulate rain level on UI
+        const mm = data.rainfall_1h_mm;
+        sliderValue.textContent = mm;
+        rainfallBar.style.width = Math.min((mm / 200 * 100), 100) + '%';
+        slider.value = mm;
+        
+        // Trigger simulation
+        simulateFlood(mm);
+    } catch (e) {
+        console.error("Live weather failed", e);
+        if (wCond) wCond.textContent = "API Offline";
+    }
+}
+
 async function simulateFlood(rainfall) {
     try {
         const res = await fetch(`${API_URL}/simulate?rainfall=${rainfall}`);

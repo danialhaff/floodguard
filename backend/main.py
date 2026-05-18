@@ -41,6 +41,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import urllib.request
+import urllib.error
+import os
+
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "mock_key_for_demo")
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to FloodGuard API"}
@@ -53,6 +59,41 @@ def get_system_info():
         "processing_method": "Rasterio pixel-to-coordinate extraction",
         "status": "Active"
     }
+
+@app.get("/weather/live")
+def get_live_weather():
+    lat = 3.0336
+    lon = 101.5311
+    
+    if OPENWEATHER_API_KEY == "mock_key_for_demo":
+        import random
+        from datetime import datetime
+        return {
+            "location": "Taman Sri Muda",
+            "temperature_c": 27.5,
+            "condition": "Heavy Rain",
+            "rainfall_1h_mm": round(random.uniform(50.0, 160.0), 1),
+            "timestamp": datetime.now().strftime("%H:%M:%S")
+        }
+    
+    try:
+        url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPENWEATHER_API_KEY}&units=metric"
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req) as response:
+            data = json.loads(response.read().decode())
+            rain_mm = 0.0
+            if 'rain' in data and '1h' in data['rain']:
+                rain_mm = data['rain']['1h']
+            from datetime import datetime
+            return {
+                "location": data.get("name", "Taman Sri Muda"),
+                "temperature_c": data["main"]["temp"],
+                "condition": data["weather"][0]["main"],
+                "rainfall_1h_mm": rain_mm,
+                "timestamp": datetime.now().strftime("%H:%M:%S")
+            }
+    except Exception as e:
+        raise HTTPException(status_code=503, detail="Weather API unavailable")
 
 @app.get("/simulate")
 def simulate_flood(rainfall: float, db: Session = Depends(database.get_db)):
