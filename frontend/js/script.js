@@ -612,9 +612,6 @@ slider.addEventListener('input', function () {
 });
 
 // ---- Live Weather Mode ----
-const modeToggle = document.getElementById('mode-toggle');
-const labelSim = document.getElementById('label-sim');
-const labelLive = document.getElementById('label-live');
 const weatherWidget = document.getElementById('weather-widget');
 const wTemp = document.getElementById('weather-temp');
 const wCond = document.getElementById('weather-cond');
@@ -623,30 +620,47 @@ const wUpdate = document.getElementById('weather-update');
 
 let liveInterval = null;
 
-if (modeToggle) {
-    modeToggle.addEventListener('change', function() {
-        if (this.checked) {
+document.body.addEventListener('change', function(e) {
+    if (e.target.id === 'mode-toggle' || e.target.id === 'mode-toggle-m') {
+        const isChecked = e.target.checked;
+        
+        // Sync both toggles if they exist
+        const mainToggle = document.getElementById('mode-toggle');
+        const clonedToggle = document.getElementById('mode-toggle-m');
+        if (mainToggle) mainToggle.checked = isChecked;
+        if (clonedToggle) clonedToggle.checked = isChecked;
+
+        // Update labels for all wrappers
+        document.querySelectorAll('.mode-toggle-wrap').forEach(wrap => {
+            const sim = wrap.querySelector('#label-sim') || wrap.querySelector('#label-sim-m');
+            const liv = wrap.querySelector('#label-live') || wrap.querySelector('#label-live-m');
+            if (isChecked) {
+                if (sim) sim.classList.remove('active');
+                if (liv) liv.classList.add('active');
+            } else {
+                if (liv) liv.classList.remove('active');
+                if (sim) sim.classList.add('active');
+            }
+        });
+
+        const clonedSlider = document.getElementById('rainfall-slider-m');
+        if (isChecked) {
             // Live Mode
-            labelSim.classList.remove('active');
-            labelLive.classList.add('active');
-            slider.disabled = true;
-            slider.style.opacity = '0.5';
-            weatherWidget.style.display = 'block';
+            slider.disabled = true; slider.style.opacity = '0.5';
+            if (clonedSlider) { clonedSlider.disabled = true; clonedSlider.style.opacity = '0.5'; }
+            if (weatherWidget) weatherWidget.style.display = 'block';
             fetchLiveWeather();
-            liveInterval = setInterval(fetchLiveWeather, 60000); // Poll every minute
+            liveInterval = setInterval(fetchLiveWeather, 60000);
         } else {
             // Sim Mode
-            labelLive.classList.remove('active');
-            labelSim.classList.add('active');
-            slider.disabled = false;
-            slider.style.opacity = '1';
-            weatherWidget.style.display = 'none';
+            slider.disabled = false; slider.style.opacity = '1';
+            if (clonedSlider) { clonedSlider.disabled = false; clonedSlider.style.opacity = '1'; }
+            if (weatherWidget) weatherWidget.style.display = 'none';
             if (liveInterval) clearInterval(liveInterval);
-            // Trigger sim with current slider
             simulateFlood(slider.value);
         }
-    });
-}
+    }
+});
 
 async function fetchLiveWeather() {
     try {
@@ -769,6 +783,21 @@ simulateFlood(0);
             if (clonedLevel)  clonedLevel.id  = 'risk-level-m';
             if (clonedIcon)   clonedIcon.id   = 'risk-icon-m';
             if (clonedList)   clonedList.id   = 'checklist-m';
+            
+            // Rename toggle IDs so delegation finds them
+            const clonedToggle = drawerBody.querySelector('#mode-toggle');
+            if (clonedToggle) {
+                clonedToggle.id = 'mode-toggle-m';
+                const wrap = clonedToggle.closest('.mode-toggle-wrap');
+                if (wrap) {
+                    const lSim = wrap.querySelector('#label-sim');
+                    const lLive = wrap.querySelector('#label-live');
+                    if (lSim) lSim.id = 'label-sim-m';
+                    if (lLive) lLive.id = 'label-live-m';
+                }
+                const mainToggle = document.getElementById('mode-toggle');
+                if (mainToggle) clonedToggle.checked = mainToggle.checked;
+            }
 
             // Sync cloned slider value with main slider value on open
             clonedSlider.value = slider.value;
