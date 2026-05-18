@@ -202,7 +202,7 @@ async function loadRescueData() {
             <td>${new Date(s.timestamp).toLocaleTimeString()}</td>
             <td><strong>${s.name}</strong><br><small>${s.phone}</small></td>
             <td>${s.lat.toFixed(5)}, ${s.lng.toFixed(5)}</td>
-            <td><span class="badge" style="background: ${isPending ? '#ef4444' : '#38bdf8'}">${s.status}</span></td>
+            <td><span class="badge ${isPending ? 'badge-pending' : 'badge-dispatched'}">${s.status}</span></td>
             <td>
                 ${isPending 
                     ? `<button class="btn-sm" style="background:#10b981;border:none;color:white;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="dispatchRescue(${s.id})">Dispatch Rescue</button>`
