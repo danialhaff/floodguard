@@ -773,7 +773,6 @@ body {
 
 /* ---- Mobile Legend Toggle (pill button on map) ---- */
 .mobile-legend-toggle {
-    display: none;            /* hidden on desktop, shown on mobile via @media above */
     align-items: center;
     gap: 5px;
     padding: 6px 12px;
@@ -793,6 +792,10 @@ body {
 }
 .mobile-legend-toggle:active { background: rgba(99,102,241,0.2); color: var(--text-primary); }
 .mobile-legend-toggle svg { flex-shrink: 0; }
+
+@media (min-width: 641px) {
+    .mobile-legend-toggle { display: none !important; }
+}
 
 /* ---- Mobile Legend Popup ---- */
 .mobile-legend-popup {
@@ -893,12 +896,16 @@ input:checked + .slider-toggle:before { transform: translateX(20px); }
 
 @media (max-width: 768px) {
     .weather-widget {
-        top: 60px; /* Stay below the map badges */
-        right: 12px; left: auto;
-        padding: 12px; min-width: 140px;
+        top: 48px; /* Stay below the map badges */
+        right: 10px; left: auto;
+        padding: 8px 12px; min-width: 130px; max-width: 150px;
+        border-radius: 8px;
     }
-    .weather-temp { font-size: 1.5rem; }
-    .weather-cond { font-size: 0.8rem; }
+    .weather-title { font-size: 0.55rem; margin-bottom: 4px; }
+    .weather-temp { font-size: 1.25rem; margin-bottom: 2px; }
+    .weather-cond { font-size: 0.7rem; margin-bottom: 4px; }
+    .weather-rain { font-size: 0.65rem; }
+    .weather-update { font-size: 0.5rem; margin-top: 6px; padding-top: 4px; }
 }
 
 /* ---- (E) Flood Water Shimmer Animation ---- */
