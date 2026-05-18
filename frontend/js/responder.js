@@ -4,6 +4,49 @@ let sosLayer;
 let ppsLayer;
 let sosMarkers = {};
 
+// ACTUAL OSM boundary of Taman Sri Muda
+const TSM_BOUNDARY = [
+    [3.0298265, 101.5253153],[3.029564,  101.525715],
+    [3.0295238, 101.5285984],[3.0272042, 101.5298335],
+    [3.0273676, 101.5301621],[3.0234865, 101.5321845],
+    [3.0233419, 101.5319297],[3.0216397, 101.5329033],
+    [3.0217991, 101.5331755],[3.0222893, 101.5331742],
+    [3.0222793, 101.5333943],[3.022225,  101.5351161],
+    [3.0213839, 101.5354044],[3.0204853, 101.5358993],
+    [3.0236981, 101.5416312],[3.029347,  101.5416741],
+    [3.0297059, 101.5418297],[3.0299256, 101.5420255],
+    [3.0301773, 101.5423205],[3.0303581, 101.5426303],
+    [3.0304572, 101.5428422],[3.0306353, 101.543321],
+    [3.0306862, 101.5437689],[3.030697,  101.5451154],
+    [3.0306541, 101.5453327],[3.0301666, 101.5464511],
+    [3.030747,  101.5466687],[3.0307612, 101.5466313],
+    [3.0309487, 101.5461373],[3.0312487, 101.5454668],
+    [3.0314148, 101.5451208],[3.0317683, 101.5445173],
+    [3.0319558, 101.5442491],[3.0321192, 101.544131],
+    [3.0324379, 101.5439594],[3.0329201, 101.5438226],
+    [3.0333004, 101.5437851],[3.0335281, 101.5437528],
+    [3.0347736, 101.5421569],[3.0349316, 101.5410961],
+    [3.0353039, 101.5411833],[3.036994,  101.5383562],
+    [3.0371547, 101.5384528],[3.0374252, 101.538021],
+    [3.0379502, 101.5363017],[3.0377252, 101.535961],
+    [3.0379877, 101.5347728],[3.0375538, 101.5343115],
+    [3.0376636, 101.5339306],[3.0382636, 101.5335363],
+    [3.0385582, 101.5323508],[3.0386225, 101.5314522],
+    [3.0383948, 101.5297356],[3.0377104, 101.5296892],
+    [3.0355637, 101.5272975],[3.0355583, 101.5259188],
+    [3.0350012, 101.5254065],[3.0298961, 101.5253165],
+    [3.0298265, 101.5253153]
+];
+
+const EVAC_ZONES = [
+    { name: 'North Zone', color: '#7c3aed', centroid: [3.0375, 101.5340] },
+    { name: 'East Zone', color: '#0891b2', centroid: [3.0308, 101.5450] },
+    { name: 'Central Zone', color: '#059669', centroid: [3.0310, 101.5360] },
+    { name: 'South Zone', color: '#d97706', centroid: [3.0230, 101.5370] },
+    { name: 'West Zone', color: '#be185d', centroid: [3.0290, 101.5265] }
+];
+
+
 document.addEventListener('DOMContentLoaded', () => {
     initMap();
     loadData();
@@ -26,6 +69,44 @@ function initMap() {
 
     sosLayer = L.layerGroup().addTo(map);
     ppsLayer = L.layerGroup().addTo(map);
+
+    drawMapBoundaries();
+}
+
+function drawMapBoundaries() {
+    // 1. TSM Boundary Outline
+    L.polygon(TSM_BOUNDARY, {
+        color: '#818cf8',
+        weight: 2,
+        dashArray: '5, 8',
+        fillColor: 'transparent',
+        interactive: false
+    }).addTo(map);
+
+    // 2. Zone Labels
+    EVAC_ZONES.forEach(zone => {
+        const markerHtml = `
+            <div style="
+                background: rgba(15, 23, 42, 0.8);
+                border: 2px solid ${zone.color};
+                color: ${zone.color};
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                white-space: nowrap;
+                backdrop-filter: blur(4px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                transform: translate(-50%, -50%);
+            ">${zone.name}</div>
+        `;
+        const icon = L.divIcon({
+            className: 'custom-zone-label',
+            html: markerHtml,
+            iconSize: [0,0]
+        });
+        L.marker(zone.centroid, { icon, interactive: false }).addTo(map);
+    });
 }
 
 async function loadData() {
