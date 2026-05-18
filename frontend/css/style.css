@@ -1027,5 +1027,47 @@ input:checked + .slider-toggle:before { transform: translateX(20px); }
 .modal-field label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #94a3b8; }
 .modal-field input { width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid #334155; border-radius: 6px; color: white; outline: none; }
 .modal-field input:focus { border-color: #38bdf8; }
-.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+
+/* Modal Buttons */
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font);
+}
+.modal-btn-cancel {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid #334155;
+}
+.modal-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+    border-color: #475569;
+}
+.modal-btn-danger {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+.modal-btn-danger:hover {
+    background: #dc2626;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+}
+.modal-btn-success {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.modal-btn-success:hover {
+    background: #059669;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}
 
