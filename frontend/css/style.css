@@ -798,6 +798,18 @@ body {
 .mobile-legend-popup {
     position: absolute;
     bottom: calc(100% + 10px);
+    right: 0;
+    width: 220px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    animation: legend-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: bottom right;
+}
+
 @keyframes legend-pop {
     from { opacity: 0; transform: scale(0.88); }
     to   { opacity: 1; transform: scale(1); }
