@@ -6,10 +6,43 @@ if (!sessionStorage.getItem('admin_token')) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    initMobileSidebar();
     initNavigation();
     loadDashboardData();
     initCRUD();
 });
+
+// --- Mobile Sidebar Toggle ---
+function initMobileSidebar() {
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const hamburger = document.getElementById('hamburger-btn');
+
+    if (!hamburger || !sidebar || !overlay) return;
+
+    function openSidebar() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-open');
+        hamburger.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+    }
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = sidebar.classList.contains('is-open');
+        isOpen ? closeSidebar() : openSidebar();
+    });
+
+    // Close sidebar when tapping overlay
+    overlay.addEventListener('click', closeSidebar);
+
+    // Expose for use in nav clicks
+    window._closeMobileSidebar = closeSidebar;
+}
 
 // --- Navigation Logic ---
 function initNavigation() {
@@ -38,6 +71,9 @@ function initNavigation() {
             if (target === 'zones') loadZonesData();
             if (target === 'pps') loadPPSData();
             if (target === 'history') loadHistoryData();
+
+            // Close mobile sidebar after navigation
+            if (window._closeMobileSidebar) window._closeMobileSidebar();
         });
     });
 }
@@ -152,6 +188,19 @@ function initCRUD() {
     const modalPPS = document.getElementById('modal-pps');
     document.getElementById('btn-add-pps').addEventListener('click', () => {
         modalPPS.style.display = 'flex';
+    });
+
+    // Cancel modal button
+    const cancelBtn = document.getElementById('btn-cancel-modal');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            modalPPS.style.display = 'none';
+        });
+    }
+
+    // Close modal on overlay click
+    modalPPS.addEventListener('click', (e) => {
+        if (e.target === modalPPS) modalPPS.style.display = 'none';
     });
 
     // Add PPS
