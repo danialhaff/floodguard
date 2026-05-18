@@ -451,7 +451,7 @@ body {
     font-size: 0.75rem;
     backdrop-filter: blur(16px);
     border: 1px solid rgba(100,120,180,0.15) !important;
-    min-width: 170px;
+    width: 245px; /* Match weather widget exactly */
     box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
@@ -955,11 +955,17 @@ input:checked + .slider-toggle:before { transform: translateX(20px); }
 .weather-update { font-size: 0.6rem; color: #64748b; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; }
 
 @media (max-width: 768px) {
-    .weather-widget {
-        top: 48px; /* Stay below the map badges */
-        right: 10px; left: auto;
-        padding: 8px 10px; min-width: 110px; max-width: 130px;
-        border-radius: 8px;
+    .weather-widget, #weather-widget.leaflet-control {
+        position: fixed !important;
+        bottom: auto !important;
+        top: 48px !important; /* Stay below the map badges */
+        right: 10px !important;
+        left: auto !important;
+        padding: 8px 10px !important;
+        width: 130px !important;
+        min-width: 130px !important;
+        margin: 0 !important;
+        border-radius: 8px !important;
     }
     .weather-title { font-size: 0.5rem; margin-bottom: 2px; }
     .weather-temp { font-size: 1.1rem; margin-bottom: 0; }

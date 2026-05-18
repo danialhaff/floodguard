@@ -603,6 +603,22 @@ legend.onAdd = function () {
 };
 legend.addTo(map);
 
+// ---- Move Weather Widget to Map Control ----
+const weatherControl = L.control({ position: 'bottomright' });
+weatherControl.onAdd = function () {
+    const widget = document.getElementById('weather-widget');
+    widget.classList.add('leaflet-control');
+    // Ensure it matches legend width (approx 245px) and spacing
+    widget.style.position = 'relative';
+    widget.style.top = 'auto';
+    widget.style.right = 'auto';
+    widget.style.width = '245px'; 
+    widget.style.minWidth = '245px';
+    widget.style.marginBottom = '10px'; // Gap between widget and legend
+    return widget;
+};
+weatherControl.addTo(map);
+
 // ---- Slider & API ----
 const slider        = document.getElementById('rainfall-slider');
 const sliderValue   = document.getElementById('rainfall-value');
