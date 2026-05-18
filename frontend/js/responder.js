@@ -231,9 +231,20 @@ function renderPPS(ppsList) {
 
         // Add to map
         if (pps.lat && pps.lng) {
-            const marker = L.circleMarker([pps.lat, pps.lng], {
-                radius: 8, fillColor: color, color: '#fff', weight: 1, fillOpacity: 0.8
-            }).bindPopup(`<b>${pps.name}</b><br>Occupancy: ${pax}/${cap}`);
+            const type = pps.name.includes('SK') ? 'secondary' : 'primary';
+            const iconEmoji = type === 'primary' ? '🏥' : '🏫';
+            const icon = L.divIcon({
+                className: '',
+                html: `<div class="pps-marker ${type}"><span>${iconEmoji}</span></div>`,
+                iconSize: [38, 38], iconAnchor: [19, 19]
+            });
+            const marker = L.marker([pps.lat, pps.lng], { icon })
+                .bindPopup(`
+                    <div class="pps-popup">
+                        <div class="pps-popup-title" style="font-weight: 700; color: #f8fafc; margin-bottom: 4px;">${pps.name}</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Occupancy: ${pax} / ${cap} Pax</div>
+                    </div>
+                `);
             ppsLayer.addLayer(marker);
         }
     });
