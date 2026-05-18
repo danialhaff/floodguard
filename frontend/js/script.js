@@ -629,6 +629,19 @@ async function simulateFlood(rainfall) {
     drawFloodGrid(Number(rainfall));
     drawEvacuationRoutes(Number(rainfall));
 
+    const existingBanner = document.getElementById('warning-banner');
+    if (rainfall >= 150) {
+        if (!existingBanner) {
+            const banner = document.createElement('div');
+            banner.id = 'warning-banner';
+            banner.innerHTML = '⚠️ <strong>CRITICAL WARNING:</strong> Evacuate low-lying zones immediately. Follow the glowing routes to your designated PPS.';
+            banner.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#ef4444; color:white; padding:12px 24px; border-radius:8px; z-index:9999; box-shadow:0 4px 12px rgba(239,68,68,0.4); animation: fadeIn 0.3s; font-family:var(--font);';
+            document.body.appendChild(banner);
+        }
+    } else if (existingBanner) {
+        existingBanner.remove();
+    }
+
     // Toggle evacuation badge
     if (evacBadge) evacBadge.style.display = rainfall >= 50 ? '' : 'none';
 }

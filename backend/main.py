@@ -11,11 +11,25 @@ class LoginRequest(BaseModel):
     username: str
     password: str
 
+class TokenResponse(BaseModel):
+    token: str
+
 class PPSCreate(BaseModel):
     name: str
     capacity: int
     lat: float
     lng: float
+
+class ZoneCreate(BaseModel):
+    zone_name: str
+    elevation_m: float
+    lat: float
+    lng: float
+
+class HistoryCreate(BaseModel):
+    date: str
+    rainfall_mm: float
+    impact_description: str
 
 app = FastAPI(title="FloodGuard API")
 
@@ -31,33 +45,52 @@ app.add_middleware(
 def read_root():
     return {"message": "Welcome to FloodGuard API"}
 
+@app.get("/system-info")
+def get_system_info():
+    return {
+        "dem_source": "MYS_alt.vrt",
+        "spatial_reference": "SRID 4326 (WGS 84)",
+        "processing_method": "Rasterio pixel-to-coordinate extraction",
+        "status": "Active"
+    }
+
 @app.get("/simulate")
 def simulate_flood(rainfall: float, db: Session = Depends(database.get_db)):
-    # Basic logic: > 50mm Low, > 100mm Moderate, > 150mm High
-    risk_level = "Safe"
+    global_risk = "Safe"
     if rainfall > 150:
-        risk_level = "High"
+        global_risk = "High"
     elif rainfall > 100:
-        risk_level = "Moderate"
+        global_risk = "Moderate"
     elif rainfall > 50:
-        risk_level = "Low"
+        global_risk = "Low"
         
     zones = db.query(models.FloodZone).all()
     features = []
     for zone in zones:
         geom_shape = to_shape(zone.geom)
+        
+        zone_risk = "Safe"
+        if rainfall > 0 and zone.elevation_m:
+            flood_depth = rainfall / 15.0 
+            if flood_depth >= zone.elevation_m * 0.5:
+                zone_risk = "High"
+            elif flood_depth >= zone.elevation_m * 0.3:
+                zone_risk = "Moderate"
+            elif flood_depth >= zone.elevation_m * 0.1:
+                zone_risk = "Low"
+                
         features.append({
             "type": "Feature",
             "properties": {
                 "name": zone.zone_name,
                 "elevation": zone.elevation_m,
-                "risk_level": risk_level
+                "risk_level": zone_risk
             },
             "geometry": geom_shape.__geo_interface__
         })
         
     return {
-        "risk_level": risk_level,
+        "risk_level": global_risk,
         "affected_zones": {
             "type": "FeatureCollection",
             "features": features
@@ -113,11 +146,11 @@ def get_admin_pps(db: Session = Depends(database.get_db)):
     pps = db.query(models.PPSLocation).all()
     return [{"id": p.id, "name": p.name, "capacity": p.capacity} for p in pps]
 
-@app.post("/admin/login")
+@app.post("/admin/login", response_model=TokenResponse)
 def admin_login(req: LoginRequest):
     if req.username == "admin" and req.password == "admin123":
         return {"token": "admin-token-xyz"}
-    raise HTTPException(status_code=401, detail="Invalid credentials")
+    raise HTTPException(status_code=401, detail="Invalid credentials. Please contact IT support.")
 
 @app.post("/admin/pps")
 def create_pps(pps: PPSCreate, db: Session = Depends(database.get_db)):
@@ -138,3 +171,25 @@ def delete_pps(pps_id: int, db: Session = Depends(database.get_db)):
     db.delete(pps)
     db.commit()
     return {"message": "Deleted successfully"}
+
+@app.post("/admin/zones")
+def create_zone(zone: ZoneCreate, db: Session = Depends(database.get_db)):
+    new_zone = models.FloodZone(
+        zone_name=zone.zone_name,
+        elevation_m=zone.elevation_m,
+        geom=f"SRID=4326;POINT({zone.lng} {zone.lat})"
+    )
+    db.add(new_zone)
+    db.commit()
+    return {"message": "Flood Zone added successfully"}
+
+@app.post("/admin/history")
+def create_history(history: HistoryCreate, db: Session = Depends(database.get_db)):
+    new_history = models.RainfallHistory(
+        date=history.date,
+        rainfall_mm=history.rainfall_mm,
+        impact_description=history.impact_description
+    )
+    db.add(new_history)
+    db.commit()
+    return {"message": "Rainfall history logged successfully"}
