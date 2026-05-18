@@ -20,6 +20,19 @@ class PPSCreate(BaseModel):
     lat: float
     lng: float
 
+class PPSUpdate(BaseModel):
+    current_pax: int
+
+class SOSCreate(BaseModel):
+    name: str
+    phone: str
+    lat: float
+    lng: float
+
+class SOSUpdate(BaseModel):
+    status: str
+
+
 class ZoneCreate(BaseModel):
     zone_name: str
     elevation_m: float
@@ -151,7 +164,8 @@ def get_routing(lat: float, lng: float, db: Session = Depends(database.get_db)):
             "type": "Feature",
             "properties": {
                 "name": pps.name,
-                "capacity": pps.capacity
+                "capacity": pps.capacity,
+                "current_pax": pps.current_pax
             },
             "geometry": geom_shape.__geo_interface__
         })
@@ -187,7 +201,55 @@ def get_admin_zones(db: Session = Depends(database.get_db)):
 @app.get("/admin/pps")
 def get_admin_pps(db: Session = Depends(database.get_db)):
     pps = db.query(models.PPSLocation).all()
-    return [{"id": p.id, "name": p.name, "capacity": p.capacity} for p in pps]
+    return [{"id": p.id, "name": p.name, "capacity": p.capacity, "current_pax": p.current_pax} for p in pps]
+
+@app.put("/admin/pps/{pps_id}/occupancy")
+def update_pps_occupancy(pps_id: int, pps_update: PPSUpdate, db: Session = Depends(database.get_db)):
+    pps = db.query(models.PPSLocation).filter(models.PPSLocation.id == pps_id).first()
+    if not pps:
+        raise HTTPException(status_code=404, detail="PPS not found")
+    pps.current_pax = pps_update.current_pax
+    db.commit()
+    return {"message": "Occupancy updated"}
+
+@app.post("/sos")
+def create_sos(sos: SOSCreate, db: Session = Depends(database.get_db)):
+    from datetime import datetime
+    new_sos = models.SOSRequest(
+        name=sos.name,
+        phone=sos.phone,
+        timestamp=datetime.now().isoformat(),
+        geom=f"SRID=4326;POINT({sos.lng} {sos.lat})"
+    )
+    db.add(new_sos)
+    db.commit()
+    return {"message": "SOS received"}
+
+@app.get("/admin/sos")
+def get_sos_requests(db: Session = Depends(database.get_db)):
+    sos_list = db.query(models.SOSRequest).all()
+    results = []
+    for s in sos_list:
+        geom_shape = to_shape(s.geom)
+        results.append({
+            "id": s.id,
+            "name": s.name,
+            "phone": s.phone,
+            "status": s.status,
+            "timestamp": s.timestamp,
+            "lat": geom_shape.y,
+            "lng": geom_shape.x
+        })
+    return results
+
+@app.put("/admin/sos/{sos_id}/status")
+def update_sos_status(sos_id: int, sos_update: SOSUpdate, db: Session = Depends(database.get_db)):
+    sos = db.query(models.SOSRequest).filter(models.SOSRequest.id == sos_id).first()
+    if not sos:
+        raise HTTPException(status_code=404, detail="SOS not found")
+    sos.status = sos_update.status
+    db.commit()
+    return {"message": "SOS status updated"}
 
 @app.post("/admin/login", response_model=TokenResponse)
 def admin_login(req: LoginRequest):

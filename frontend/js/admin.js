@@ -71,6 +71,7 @@ function initNavigation() {
             if (target === 'zones') loadZonesData();
             if (target === 'pps') loadPPSData();
             if (target === 'history') loadHistoryData();
+            if (target === 'rescue') loadRescueData();
 
             // Close mobile sidebar after navigation
             if (window._closeMobileSidebar) window._closeMobileSidebar();
@@ -98,10 +99,13 @@ async function fetchAPI(endpoint) {
             { id: 5, zone_name: "West Zone", elevation_m: 11.3 }
         ];
         if (endpoint === '/admin/pps') return [
-            { id: 1, name: "Dewan Azalea Seksyen 25", capacity: 500 },
-            { id: 2, name: "SK Taman Sri Muda", capacity: 800 },
-            { id: 3, name: "Dewan MBSA Seksyen 28", capacity: 1200 },
-            { id: 4, name: "SK Seksyen 16", capacity: 1000 }
+            { id: 1, name: "Dewan Azalea Seksyen 25", capacity: 500, current_pax: 450 },
+            { id: 2, name: "SK Taman Sri Muda", capacity: 800, current_pax: 200 },
+            { id: 3, name: "Dewan MBSA Seksyen 28", capacity: 1200, current_pax: 1100 },
+            { id: 4, name: "SK Seksyen 16", capacity: 1000, current_pax: 0 }
+        ];
+        if (endpoint === '/admin/sos') return [
+            { id: 1, name: "Ahmad Ali", phone: "012-3456789", status: "Pending", timestamp: "2026-05-18T10:00:00", lat: 3.0300, lng: 101.5300 }
         ];
         if (endpoint === '/historical-data') return [
             { date: "2021-12-17", rainfall_mm: 198.5, impact_description: "Major flood — entire TSM inundated" },
@@ -141,19 +145,27 @@ async function loadZonesData() {
 
 async function loadPPSData() {
     const tbody = document.getElementById('table-pps');
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">Loading data...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">Loading data...</td></tr>';
     
     const data = await fetchAPI('/admin/pps');
-    if (!data) return tbody.innerHTML = '<tr><td colspan="5" class="text-center">Error loading data</td></tr>';
-    if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="text-center">No PPS found</td></tr>';
+    if (!data) return tbody.innerHTML = '<tr><td colspan="6" class="text-center">Error loading data</td></tr>';
+    if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="6" class="text-center">No PPS found</td></tr>';
 
     tbody.innerHTML = data.map(p => `
         <tr>
             <td>#${p.id}</td>
             <td><strong>${p.name}</strong></td>
             <td>${p.capacity} pax</td>
+            <td>
+                <span style="color: ${p.current_pax > p.capacity * 0.9 ? '#ef4444' : '#10b981'}">
+                    ${p.current_pax || 0} / ${p.capacity}
+                </span>
+            </td>
             <td><span class="badge">Active</span></td>
-            <td><button class="btn-danger" onclick="deletePPS(${p.id})">Delete</button></td>
+            <td>
+                <button class="btn-sm" style="background:var(--accent);border:none;color:white;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:5px;" onclick="openUpdatePaxModal(${p.id}, ${p.current_pax || 0})">Update Pax</button>
+                <button class="btn-danger" onclick="deletePPS(${p.id})">Delete</button>
+            </td>
         </tr>
     `).join('');
 }
@@ -173,6 +185,33 @@ async function loadHistoryData() {
             <td>${h.impact_description}</td>
         </tr>
     `).join('');
+}
+
+async function loadRescueData() {
+    const tbody = document.getElementById('table-sos');
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center">Loading data...</td></tr>';
+    
+    const data = await fetchAPI('/admin/sos');
+    if (!data) return tbody.innerHTML = '<tr><td colspan="5" class="text-center">Error loading data</td></tr>';
+    if (data.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="text-center">No SOS requests currently</td></tr>';
+
+    tbody.innerHTML = data.map(s => {
+        const isPending = s.status === 'Pending';
+        return `
+        <tr>
+            <td>${new Date(s.timestamp).toLocaleTimeString()}</td>
+            <td><strong>${s.name}</strong><br><small>${s.phone}</small></td>
+            <td>${s.lat.toFixed(5)}, ${s.lng.toFixed(5)}</td>
+            <td><span class="badge" style="background: ${isPending ? '#ef4444' : '#38bdf8'}">${s.status}</span></td>
+            <td>
+                ${isPending 
+                    ? `<button class="btn-sm" style="background:#10b981;border:none;color:white;padding:4px 8px;border-radius:4px;cursor:pointer;" onclick="dispatchRescue(${s.id})">Dispatch Rescue</button>`
+                    : `Dispatched`
+                }
+            </td>
+        </tr>
+        `
+    }).join('');
 }
 
 // --- CRUD Operations ---
@@ -233,6 +272,66 @@ function initCRUD() {
             showToast('Network error occurred.', 'error');
         }
     });
+
+    // Pax Update Modal
+    const modalPax = document.getElementById('modal-update-pax');
+    document.getElementById('btn-cancel-pax').addEventListener('click', () => {
+        modalPax.style.display = 'none';
+    });
+    modalPax.addEventListener('click', (e) => {
+        if (e.target === modalPax) modalPax.style.display = 'none';
+    });
+    
+    document.getElementById('form-update-pax').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('update_pps_id').value;
+        const pax = document.getElementById('current_pax').value;
+
+        try {
+            const res = await fetch(`${API_BASE}/admin/pps/${id}/occupancy`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ current_pax: parseInt(pax) })
+            });
+            if(res.ok) {
+                modalPax.style.display = 'none';
+                loadPPSData();
+                showToast('Occupancy updated successfully.', 'success');
+            } else {
+                showToast('Failed to update occupancy.', 'error');
+            }
+        } catch(err) {
+            console.error(err);
+            showToast('Network error.', 'error');
+        }
+    });
+}
+
+window.openUpdatePaxModal = function(id, currentPax) {
+    document.getElementById('update_pps_id').value = id;
+    document.getElementById('current_pax').value = currentPax;
+    document.getElementById('modal-update-pax').style.display = 'flex';
+}
+
+window.dispatchRescue = async function(id) {
+    if(confirm('Dispatch rescue team to this location?')) {
+        try {
+            const res = await fetch(`${API_BASE}/admin/sos/${id}/status`, { 
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ status: 'Dispatched' })
+            });
+            if (res.ok) {
+                loadRescueData();
+                showToast('Rescue team dispatched!', 'success');
+            } else {
+                showToast('Action failed.', 'error');
+            }
+        } catch(err) { 
+            console.error(err); 
+            showToast('Network error occurred.', 'error');
+        }
+    }
 }
 
 // Global delete function called from inline onclick

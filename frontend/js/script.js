@@ -45,6 +45,7 @@ const PPS_LOCATIONS = [
         shortName: 'Dewan Azalea',
         coords: [3.0336, 101.5367],
         capacity: 500,
+        current_pax: 450,
         type: 'primary',
         note: 'Primary Relief Centre - Used during 2021 floods'
     },
@@ -54,6 +55,7 @@ const PPS_LOCATIONS = [
         shortName: 'SK Sri Muda',
         coords: [3.0315, 101.5398],
         capacity: 800,
+        current_pax: 200,
         type: 'primary',
         note: 'Primary Relief Centre - National School'
     },
@@ -63,6 +65,7 @@ const PPS_LOCATIONS = [
         shortName: 'Dewan MBSA Sek28',
         coords: [3.0487, 101.5421],
         capacity: 1200,
+        current_pax: 1100,
         type: 'secondary',
         note: 'Secondary Relief Centre - For those unable to reach primary centre'
     },
@@ -72,6 +75,7 @@ const PPS_LOCATIONS = [
         shortName: 'SK Seksyen 16',
         coords: [3.0576, 101.5189],
         capacity: 1000,
+        current_pax: 0,
         type: 'secondary',
         note: 'Secondary Relief Centre - Via Highway'
     }
@@ -286,13 +290,21 @@ const ppsIconSecondary = L.divIcon({
 const ppsMap = {};
 PPS_LOCATIONS.forEach(pps => {
     const icon = pps.type === 'primary' ? ppsIconPrimary : ppsIconSecondary;
+    const paxPct = Math.min(100, Math.round((pps.current_pax / pps.capacity) * 100));
+    const paxColor = paxPct > 90 ? '#ef4444' : paxPct > 70 ? '#f59e0b' : '#10b981';
     const marker = L.marker(pps.coords, { icon })
         .addTo(map)
         .bindPopup(`
             <div class="pps-popup">
                 <div class="pps-popup-title">${pps.name}</div>
                 <div class="pps-popup-tag ${pps.type}">${pps.type === 'primary' ? '🔴 Primary Centre' : '🟡 Secondary Centre'}</div>
-                <div class="pps-popup-row">👥 Capacity: <b>${pps.capacity.toLocaleString()} people</b></div>
+                <div class="pps-popup-row" style="margin-top:8px;">👥 Capacity: <b>${pps.capacity.toLocaleString()}</b></div>
+                <div class="pps-popup-row">
+                    🏕️ Occupancy: <b style="color:${paxColor}">${pps.current_pax}</b> (${paxPct}%)
+                    <div class="pax-bar-container">
+                        <div class="pax-bar-fill" style="width: ${paxPct}%; background: ${paxColor}"></div>
+                    </div>
+                </div>
                 <div class="pps-popup-note">${pps.note}</div>
             </div>
         `, { maxWidth: 260 });
@@ -959,5 +971,57 @@ simulateFlood(0);
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
         open ? closeLegend() : openLegend();
+    });
+})();
+
+// =============================================
+// SOS Feature (First Responder)
+// =============================================
+(function () {
+    const btnSos = document.getElementById('btn-sos');
+    const modalSos = document.getElementById('modal-sos');
+    const btnCancel = document.getElementById('btn-cancel-sos');
+    const formSos = document.getElementById('form-sos');
+
+    if (!btnSos || !modalSos) return;
+
+    btnSos.addEventListener('click', () => {
+        modalSos.style.display = 'flex';
+    });
+
+    btnCancel.addEventListener('click', () => {
+        modalSos.style.display = 'none';
+    });
+
+    modalSos.addEventListener('click', (e) => {
+        if (e.target === modalSos) modalSos.style.display = 'none';
+    });
+
+    formSos.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('sos_name').value;
+        const phone = document.getElementById('sos_phone').value;
+        
+        // Simulate grabbing GPS coords (Taman Sri Muda area)
+        const lat = 3.0300 + (Math.random() * 0.005 - 0.0025);
+        const lng = 101.5300 + (Math.random() * 0.005 - 0.0025);
+
+        try {
+            const res = await fetch(`${API_URL}/sos`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, phone, lat, lng })
+            });
+            if(res.ok) {
+                alert("🚨 SOS Sent Successfully!\n\nFirst responders have been notified of your location. Please stay safe and try to reach higher ground.");
+                modalSos.style.display = 'none';
+                formSos.reset();
+            } else {
+                alert("Failed to send SOS. Please call 999 directly.");
+            }
+        } catch(err) {
+            console.error(err);
+            alert("Network error. Your location could not be transmitted. Call 999 immediately.");
+        }
     });
 })();

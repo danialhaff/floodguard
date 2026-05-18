@@ -14,6 +14,16 @@ class PPSLocation(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     capacity = Column(Integer)
+    current_pax = Column(Integer, default=0)
+    geom = Column(Geometry(geometry_type='POINT', srid=4326))
+
+class SOSRequest(Base):
+    __tablename__ = "sos_requests"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(255), nullable=False)
+    phone = Column(String(50), nullable=False)
+    status = Column(String(50), default="Pending") # Pending, Dispatched, Rescued
+    timestamp = Column(String(100)) # Using ISO string for simplicity
     geom = Column(Geometry(geometry_type='POINT', srid=4326))
 
 class RainfallHistory(Base):
