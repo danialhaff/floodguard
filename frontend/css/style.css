@@ -938,34 +938,34 @@ input:checked + .slider-toggle:before { transform: translateX(20px); }
 .slider-toggle.round:before { border-radius: 50%; }
 
 .weather-widget {
-    position: absolute; top: 20px; right: 20px; z-index: 500;
-    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-    padding: 16px; color: white; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    min-width: 180px; pointer-events: none; animation: fadeIn 0.4s ease-out;
+    position: absolute; top: 16px; right: 16px; z-index: 500;
+    background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+    padding: 12px 14px; color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    min-width: 130px; pointer-events: none; animation: fadeIn 0.4s ease-out;
 }
-.weather-title { font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.weather-title { font-size: 0.65rem; color: #94a3b8; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 .weather-temp {
-    font-size: 2rem; font-weight: 800; margin-bottom: 4px;
+    font-size: 1.5rem; font-weight: 800; margin-bottom: 2px;
     background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.weather-cond { font-size: 0.9rem; font-weight: 500; color: #38bdf8; margin-bottom: 8px; }
-.weather-rain { font-size: 0.8rem; color: #cbd5e1; }
+.weather-cond { font-size: 0.8rem; font-weight: 500; color: #38bdf8; margin-bottom: 4px; }
+.weather-rain { font-size: 0.75rem; color: #cbd5e1; }
 .weather-rain span { font-weight: 700; color: #fca5a5; }
-.weather-update { font-size: 0.65rem; color: #64748b; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; }
+.weather-update { font-size: 0.6rem; color: #64748b; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; }
 
 @media (max-width: 768px) {
     .weather-widget {
         top: 48px; /* Stay below the map badges */
         right: 10px; left: auto;
-        padding: 8px 12px; min-width: 130px; max-width: 150px;
+        padding: 8px 10px; min-width: 110px; max-width: 130px;
         border-radius: 8px;
     }
-    .weather-title { font-size: 0.55rem; margin-bottom: 4px; }
-    .weather-temp { font-size: 1.25rem; margin-bottom: 2px; }
-    .weather-cond { font-size: 0.7rem; margin-bottom: 4px; }
-    .weather-rain { font-size: 0.65rem; }
-    .weather-update { font-size: 0.5rem; margin-top: 6px; padding-top: 4px; }
+    .weather-title { font-size: 0.5rem; margin-bottom: 2px; }
+    .weather-temp { font-size: 1.1rem; margin-bottom: 0; }
+    .weather-cond { font-size: 0.65rem; margin-bottom: 2px; }
+    .weather-rain { font-size: 0.6rem; }
+    .weather-update { font-size: 0.45rem; margin-top: 4px; padding-top: 2px; }
 }
 
 /* ---- (E) Flood Water Shimmer Animation ---- */

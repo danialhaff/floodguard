@@ -682,7 +682,7 @@ async function fetchLiveWeather() {
         // Update widget
         if (wTemp) wTemp.textContent = `${data.temperature_c}°C`;
         if (wCond) wCond.textContent = data.condition;
-        if (wRain) wRain.innerHTML = `Rain: <span>${data.rainfall_1h_mm} mm/h</span>`;
+        if (wRain) wRain.innerHTML = `${data.rainfall_1h_mm} mm/h`;
         if (wUpdate) wUpdate.textContent = `Updated: ${data.timestamp}`;
         
         // Emulate rain level on UI
