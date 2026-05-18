@@ -1015,8 +1015,9 @@ simulateFlood(0);
 
     formSos.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('sos_name').value;
-        const phone = document.getElementById('sos_phone').value;
+        const name = document.getElementById('sos_name').value.trim();
+        const phoneRaw = document.getElementById('sos_phone').value;
+        const phone = phoneRaw.replace(/[-\s]/g, '');
         
         // Simulate grabbing GPS coords (Taman Sri Muda area)
         const lat = 3.0300 + (Math.random() * 0.005 - 0.0025);

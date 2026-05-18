@@ -240,7 +240,7 @@
                 </div>
                 <div class="modal-field">
                     <label for="sos_phone">Phone Number</label>
-                    <input type="text" id="sos_phone" required>
+                    <input type="tel" id="sos_phone" pattern="^01[0-9][-\s]?[0-9]{7,8}$" placeholder="e.g. 0123456789" title="Please enter a valid Malaysian phone number starting with 01" required>
                 </div>
                 <div class="modal-actions" style="margin-top: 20px;">
                     <button type="button" class="modal-btn modal-btn-cancel" id="btn-cancel-sos">Cancel</button>
