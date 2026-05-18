@@ -142,8 +142,13 @@
                 if(res.ok) {
                     const data = await res.json();
                     sessionStorage.setItem('admin_token', data.token);
-                    window.location.href = 'admin.html';
+                    if (data.role === 'responder') {
+                        window.location.href = 'responder.html';
+                    } else {
+                        window.location.href = 'admin.html';
+                    }
                 } else {
+                    document.getElementById('error-msg').textContent = 'Invalid credentials';
                     document.getElementById('error-msg').style.display = 'block';
                     btn.textContent = 'Login';
                 }
@@ -153,6 +158,10 @@
                     console.warn("Backend API offline. Using Zero-Backend Mock Login.");
                     sessionStorage.setItem('admin_token', 'mock-admin-token');
                     window.location.href = 'admin.html';
+                } else if (payload.username === 'bomba' && payload.password === 'bomba123') {
+                    console.warn("Backend API offline. Using Zero-Backend Mock Login for Responder.");
+                    sessionStorage.setItem('admin_token', 'mock-responder-token');
+                    window.location.href = 'responder.html';
                 } else {
                     document.getElementById('error-msg').textContent = 'Invalid credentials (Mock)';
                     document.getElementById('error-msg').style.display = 'block';

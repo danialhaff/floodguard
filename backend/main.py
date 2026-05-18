@@ -64,6 +64,15 @@ OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "mock_key_for_demo")
 def read_root():
     return {"message": "Welcome to FloodGuard API"}
 
+@app.post("/admin/login")
+def login(req: LoginRequest):
+    if req.username == "admin" and req.password == "admin123":
+        return {"token": "mock-admin-token", "role": "admin"}
+    elif req.username == "bomba" and req.password == "bomba123":
+        return {"token": "mock-responder-token", "role": "responder"}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
 @app.get("/system-info")
 def get_system_info():
     return {
