@@ -93,6 +93,10 @@ function renderSOS(sosList) {
                 <div>
                     <div class="sos-name">${sos.name}</div>
                     <div class="sos-phone">📞 ${sos.phone}</div>
+                    <div class="sos-coord" style="color: #94a3b8; font-size: 0.8rem; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        ${sos.lat.toFixed(5)}, ${sos.lng.toFixed(5)}
+                    </div>
                 </div>
                 <div class="sos-time">${timeStr}</div>
             </div>
