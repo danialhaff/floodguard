@@ -224,8 +224,14 @@ function initCRUD() {
                 e.target.reset();
                 loadPPSData();
                 loadDashboardData();
+                showToast('Evacuation center added successfully!', 'success');
+            } else {
+                showToast('Failed to add evacuation center.', 'error');
             }
-        } catch(err) { console.error(err); }
+        } catch(err) { 
+            console.error(err); 
+            showToast('Network error occurred.', 'error');
+        }
     });
 }
 
@@ -233,9 +239,47 @@ function initCRUD() {
 window.deletePPS = async function(id) {
     if(confirm('Are you sure you want to delete this PPS?')) {
         try {
-            await fetch(`${API_BASE}/admin/pps/${id}`, { method: 'DELETE' });
-            loadPPSData();
-            loadDashboardData();
-        } catch(err) { console.error(err); }
+            const res = await fetch(`${API_BASE}/admin/pps/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                loadPPSData();
+                loadDashboardData();
+                showToast('Evacuation center removed.', 'success');
+            } else {
+                showToast('Failed to delete center.', 'error');
+            }
+        } catch(err) { 
+            console.error(err); 
+            showToast('Network error occurred.', 'error');
+        }
     }
+}
+
+// --- Toast Notification System ---
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    // Icon based on type
+    const iconSvg = type === 'success' 
+        ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+        : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+
+    toast.innerHTML = `
+        <div class="toast-icon">${iconSvg}</div>
+        <div class="toast-message">${message}</div>
+    `;
+
+    container.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
