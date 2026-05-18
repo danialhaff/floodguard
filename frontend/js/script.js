@@ -1013,15 +1013,23 @@ simulateFlood(0);
                 body: JSON.stringify({ name, phone, lat, lng })
             });
             if(res.ok) {
-                alert("🚨 SOS Sent Successfully!\n\nFirst responders have been notified of your location. Please stay safe and try to reach higher ground.");
                 modalSos.style.display = 'none';
                 formSos.reset();
+                const successModal = document.getElementById('modal-sos-success');
+                if (successModal) successModal.style.display = 'flex';
             } else {
                 alert("Failed to send SOS. Please call 999 directly.");
             }
-        } catch(err) {
+        } catch (err) {
             console.error(err);
-            alert("Network error. Your location could not be transmitted. Call 999 immediately.");
+            alert("Network error. Failed to send SOS. Please call 999 directly.");
         }
     });
+
+    const btnCloseSuccess = document.getElementById('btn-close-success');
+    if (btnCloseSuccess) {
+        btnCloseSuccess.addEventListener('click', () => {
+            document.getElementById('modal-sos-success').style.display = 'none';
+        });
+    }
 })();
