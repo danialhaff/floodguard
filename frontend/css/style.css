@@ -833,6 +833,62 @@ body {
     font-style: italic;
 }
 
+/* =========================================
+   Live Weather Widget & Toggle
+   ========================================= */
+.mode-toggle-wrap {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: rgba(15, 23, 42, 0.4); padding: 12px;
+    border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+}
+.mode-label {
+    font-size: 0.8rem; font-weight: 600; color: #64748b; transition: color 0.3s;
+}
+.mode-label.active {
+    color: #38bdf8; text-shadow: 0 0 10px rgba(56,189,248,0.4);
+}
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider-toggle {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #334155; transition: .4s;
+}
+.slider-toggle:before {
+    position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+    background-color: white; transition: .4s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+input:checked + .slider-toggle { background: linear-gradient(135deg, #38bdf8, #818cf8); }
+input:checked + .slider-toggle:before { transform: translateX(20px); }
+.slider-toggle.round { border-radius: 34px; }
+.slider-toggle.round:before { border-radius: 50%; }
+
+.weather-widget {
+    position: absolute; top: 20px; right: 20px; z-index: 500;
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+    padding: 16px; color: white; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    min-width: 180px; pointer-events: none; animation: fadeIn 0.4s ease-out;
+}
+.weather-title { font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.weather-temp {
+    font-size: 2rem; font-weight: 800; margin-bottom: 4px;
+    background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.weather-cond { font-size: 0.9rem; font-weight: 500; color: #38bdf8; margin-bottom: 8px; }
+.weather-rain { font-size: 0.8rem; color: #cbd5e1; }
+.weather-rain span { font-weight: 700; color: #fca5a5; }
+.weather-update { font-size: 0.65rem; color: #64748b; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; }
+
+@media (max-width: 768px) {
+    .weather-widget {
+        top: 60px; /* Stay below the map badges */
+        right: 12px; left: auto;
+        padding: 12px; min-width: 140px;
+    }
+    .weather-temp { font-size: 1.5rem; }
+    .weather-cond { font-size: 0.8rem; }
+}
+
 /* ---- (E) Flood Water Shimmer Animation ---- */
 .flood-shimmer {
     animation: water-shimmer 3s ease-in-out infinite;
