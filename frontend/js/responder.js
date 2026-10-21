@@ -63,8 +63,9 @@ function initMap() {
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
     // Dark map style
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4qi2_1_28865e41fc013b41a679bde8', {
+        maxZoom: 19,
+        subdomains: 'abcd'
     }).addTo(map);
 
     sosLayer = L.layerGroup().addTo(map);

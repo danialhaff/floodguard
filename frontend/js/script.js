@@ -256,7 +256,7 @@ for (let r = 0; r < GRID_ROWS; r++) {
 
 // ---- Map Init ----
 const map = L.map('map', { zoomControl: true }).setView([3.0295, 101.5360], 14);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4qi2_1_28865e41fc013b41a679bde8', {
     maxZoom: 19, attribution: '© OpenStreetMap contributors · © CARTO',
     subdomains: 'abcd'
 }).addTo(map);
