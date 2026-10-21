@@ -139,7 +139,7 @@
                     body: JSON.stringify(payload)
                 });
                 
-                if(res.ok) {
+                if (res.ok) {
                     const data = await res.json();
                     sessionStorage.setItem('admin_token', data.token);
                     if (data.role === 'responder') {
@@ -147,23 +147,27 @@
                     } else {
                         window.location.href = 'admin.html';
                     }
+                    return;
+                } else if (res.status === 404) {
+                    // Port 8000 is occupied by another app or endpoint missing -> fallback
+                    throw new Error('Endpoint not found');
                 } else {
                     document.getElementById('error-msg').textContent = 'Invalid credentials';
                     document.getElementById('error-msg').style.display = 'block';
                     btn.textContent = 'Login';
                 }
             } catch(e) {
-                // FALLBACK ZERO-BACKEND UNTUK GITHUB PAGES
+                // FALLBACK ZERO-BACKEND UNTUK GITHUB PAGES & OFFLINE
                 if (payload.username === 'admin' && payload.password === 'admin123') {
-                    console.warn("Backend API offline. Using Zero-Backend Mock Login.");
+                    console.warn("Backend API offline or unreachable. Using Mock Login for Admin.");
                     sessionStorage.setItem('admin_token', 'mock-admin-token');
                     window.location.href = 'admin.html';
                 } else if (payload.username === 'bomba' && payload.password === 'bomba123') {
-                    console.warn("Backend API offline. Using Zero-Backend Mock Login for Responder.");
+                    console.warn("Backend API offline or unreachable. Using Mock Login for Responder.");
                     sessionStorage.setItem('admin_token', 'mock-responder-token');
                     window.location.href = 'responder.html';
                 } else {
-                    document.getElementById('error-msg').textContent = 'Invalid credentials (Mock)';
+                    document.getElementById('error-msg').textContent = 'Invalid credentials';
                     document.getElementById('error-msg').style.display = 'block';
                     btn.textContent = 'Login';
                 }

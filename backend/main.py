@@ -260,11 +260,6 @@ def update_sos_status(sos_id: int, sos_update: SOSUpdate, db: Session = Depends(
     db.commit()
     return {"message": "SOS status updated"}
 
-@app.post("/admin/login", response_model=TokenResponse)
-def admin_login(req: LoginRequest):
-    if req.username == "admin" and req.password == "admin123":
-        return {"token": "admin-token-xyz"}
-    raise HTTPException(status_code=401, detail="Invalid credentials. Please contact IT support.")
 
 @app.post("/admin/pps")
 def create_pps(pps: PPSCreate, db: Session = Depends(database.get_db)):
