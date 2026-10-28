@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Laporan Projek FloodGuard</title>
+<style>
+    body {
+        font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+        color: #1e293b;
+        line-height: 1.6;
+        margin: 40px;
+    }
+    h1 {
+        color: #0f172a;
+        font-size: 26pt;
+        border-bottom: 3px solid #0284c7;
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+    }
+    .subtitle {
+        color: #0284c7;
+        font-size: 14pt;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 25px;
+    }
+    .meta-box {
+        background-color: #f0f9ff;
+        border-left: 5px solid #0284c7;
+        padding: 14px 18px;
+        margin-bottom: 30px;
+        font-size: 11pt;
+    }
+    .meta-box table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .meta-box td {
+        padding: 4px 8px;
+        border: none;
+    }
+    .meta-label {
+        font-weight: bold;
+        color: #0369a1;
+        width: 160px;
+    }
+    h2 {
+        color: #0369a1;
+        font-size: 16pt;
+        border-bottom: 1.5px solid #cbd5e1;
+        padding-bottom: 4px;
+        margin-top: 28px;
+    }
+    h3 {
+        color: #0f172a;
+        font-size: 13pt;
+        margin-top: 18px;
+        margin-bottom: 6px;
+    }
+    p, li {
+        font-size: 11pt;
+        text-align: justify;
+    }
+    ul, ol {
+        margin-top: 4px;
+        margin-bottom: 12px;
+        padding-left: 24px;
+    }
+    li {
+        margin-bottom: 4px;
+    }
+    table.content-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0 24px 0;
+        font-size: 10pt;
+    }
+    table.content-table th {
+        background-color: #0f172a;
+        color: #ffffff;
+        font-weight: bold;
+        text-align: left;
+        padding: 10px 12px;
+        border: 1px solid #0f172a;
+    }
+    table.content-table td {
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        vertical-align: top;
+    }
+    table.content-table tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+    .callout {
+        background-color: #f1f5f9;
+        border-left: 4px solid #64748b;
+        padding: 12px 16px;
+        margin: 16px 0;
+        font-size: 10.5pt;
+    }
+    .callout-success {
+        background-color: #ecfdf5;
+        border-left: 4px solid #10b981;
+    }
+    .callout-info {
+        background-color: #eff6ff;
+        border-left: 4px solid #3b82f6;
+    }
+    code {
+        font-family: 'Consolas', 'Courier New', monospace;
+        background-color: #f1f5f9;
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-size: 10pt;
+        color: #0369a1;
+    }
+    pre {
+        background-color: #0f172a;
+        color: #f8fafc;
+        padding: 14px 18px;
+        border-radius: 6px;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 9.5pt;
+        line-height: 1.4;
+        overflow-x: auto;
+    }
+</style>
+</head>
+<body>
+
+<h1>LAPORAN PROJEK FLOODGUARD</h1>
+<div class="subtitle">Sistem Amaran Awal Banjir, Simulasi Topografi & Pusat Arahan Misi Menyelamat (Taman Sri Muda)</div>
+
+<div class="meta-box">
+    <table>
+        <tr><td class="meta-label">Nama Projek:</td><td>FloodGuard (Taman Sri Muda Early Warning System)</td></tr>
+        <tr><td class="meta-label">Pembangun:</td><td>Muhammad Danial Hafiz (UniKL Software Engineering)</td></tr>
+        <tr><td class="meta-label">Kawasan Kajian:</td><td>Taman Sri Muda, Seksyen 25, Shah Alam, Selangor</td></tr>
+        <tr><td class="meta-label">Status Data Geografi:</td><td>Data Sebenar (NASA SRTM DEM + OpenStreetMap + Supabase PostGIS)</td></tr>
+        <tr><td class="meta-label">Tarikh Dokumen:</td><td>21 Oktober 2026</td></tr>
+    </table>
+</div>
+
+<h2>1. PENGENALAN & LATAR BELAKANG PROJEK</h2>
+<p>
+    Taman Sri Muda, Shah Alam merupakan salah satu penempatan kediaman berkepadatan tinggi yang paling terdedah kepada bencana banjir kilat dan banjir monsun di Malaysia. Peristiwa banjir besar pada 17 hingga 18 Disember 2021 telah menenggelamkan ribuan kediaman, meragut nyawa, serta melumpuhkan akses komunikasi dan operasi menyelamat. Keadaan ini berpunca daripada gabungan hujan luar biasa, ketinggian topografi tanah yang amat rendah berbanding paras Sungai Klang, dan kelemahan dalam sistem penyelarasan evakuasi penduduk ke Pusat Pemindahan Sementara (PPS).
+</p>
+<p>
+    <strong>FloodGuard</strong> dibangunkan sebagai penyelesaian kejuruteraan perisian berteraskan sistem maklumat geografi (GIS) dan model elevasi digital (DEM) untuk menyediakan amaran awal pintar, visualisasi simulasi banjir dinamik, panduan laluan keluar selamat bagi penduduk, serta papan pemuka arahan operasi menyelamat bersepadu untuk agensi responder seperti Jabatan Bomba dan Penyelamat Malaysia (JBPM) dan NADMA.
+</p>
+
+<h2>2. SENIBINA TEKNOLOGI & ALAT (TECH STACK)</h2>
+<p>
+    Sistem FloodGuard dibina dengan integrasi teknologi moden merangkumi bahagian hadapan (Frontend), bahagian belakang (Backend), pemprosesan spatial satelit, dan pangkalan data berprestasi tinggi:
+</p>
+
+<table class="content-table">
+    <thead>
+        <tr>
+            <th style="width: 22%;">Lapisan (Layer)</th>
+            <th style="width: 28%;">Teknologi / Pustaka</th>
+            <th style="width: 50%;">Peranan & Fungsi Utama</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Frontend UI/UX</strong></td>
+            <td>HTML5, CSS3 (Glassmorphism), Vanilla JavaScript (ES6+)</td>
+            <td>Antara muka moden responsif bertema gelap (Dark Mode), komponen interaktif, panel kawalan simulasi, modal SOS kecemasan.</td>
+        </tr>
+        <tr>
+            <td><strong>Web GIS & Peta</strong></td>
+            <td>Leaflet.js (v1.9.4) & CARTO Basemaps</td>
+            <td>Enjin peta interaktif, pemaparan tile layer berkualiti tinggi, penanda PPS, garisan poligon sempadan, dan laluan navigasi kecemasan.</td>
+        </tr>
+        <tr>
+            <td><strong>Backend API</strong></td>
+            <td>Python 3, FastAPI, Uvicorn</td>
+            <td>RESTful API berprestasi tinggi (asynchronous), pengurusan simulasi paras air, routing titik PPS, pemprosesan panggilan SOS, dan autentikasi RBAC.</td>
+        </tr>
+        <tr>
+            <td><strong>Spatial Database</strong></td>
+            <td>PostgreSQL + PostGIS (via Supabase Cloud)</td>
+            <td>Pangkalan data spatial menyimpan geometri koordinat (SRID 4326/WGS84) bagi zon banjir, PPS, rekod sejarah hujan, dan kedudukan mangsa SOS.</td>
+        </tr>
+        <tr>
+            <td><strong>Pemprosesan DEM/GIS</strong></td>
+            <td>Python Rasterio & NumPy</td>
+            <td>Skrip pemprosesan raster satelit untuk membaca fail altitud Malaysia (MYS_alt.vrt) dan mengekstrak ketinggian tanah tepat di zon TSM.</td>
+        </tr>
+        <tr>
+            <td><strong>Cuaca Masa-Nyata</strong></td>
+            <td>OpenWeatherMap API</td>
+            <td>Mengambil data taburan hujan sejam (1-hour rainfall mm), suhu, dan keadaan cuaca live bagi stesen cuaca Shah Alam.</td>
+        </tr>
+        <tr>
+            <td><strong>Kontena & Deployment</strong></td>
+            <td>Docker, Docker Compose, GitHub Pages</td>
+            <td>Pakej kontena perkhidmatan frontend dan backend serta hos statik bagi portal web awam.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>3. KETULENAN DATA GEOGRAFI & KETINGGIAN TANAH</h2>
+<p>
+    Salah satu kekuatan utama projek FloodGuard adalah kebergantungan kepada <strong>data spatial sebenar (Real Scientific Data)</strong> dan bukan data rekaan:
+</p>
+
+<div class="callout callout-success">
+    <strong>Pengesahan Ketulenan Data:</strong> Data ketinggian tanah dalam projek ini adalah 100% DATA SEBENAR yang diperoleh daripada satelit NASA SRTM (Shuttle Radar Topography Mission) melalui dataset DIVA-GIS (MYS_alt).
+</div>
+
+<h3>A. Analisis Topografi Sebenar Taman Sri Muda</h3>
+<p>
+    Melalui fail pemprosesan <code>extract_elevation.py</code>, ketinggian tanah diekstrak secara terus mengikut koordinat centroid setiap zon:
+</p>
+<ul>
+    <li><strong>Central Zone (Tengah TSM):</strong> Paras ketinggian tanah hanya <strong>8.7 meter</strong> dari aras laut. Ini mengesahkan hakikat geografi bahawa kawasan tengah adalah 'basin' (mangkuk tadahan) yang paling cepat ditenggelami air.</li>
+    <li><strong>South Zone (Selatan TSM):</strong> Paras ketinggian sekitar <strong>9.1 meter</strong>.</li>
+    <li><strong>East Zone (Timur TSM):</strong> Paras ketinggian sekitar <strong>10.2 meter</strong> (berdekatan laluan sungai).</li>
+    <li><strong>North Zone & West Zone:</strong> Paras tanah lebih tinggi iaitu antara <strong>11.3 meter hingga 12.5 meter</strong>.</li>
+</ul>
+
+<h3>B. Sempadan Kejiranan & Lokasi Pusat Pemindahan (PPS)</h3>
+<ul>
+    <li><strong>Sempadan Poligon Rasmi:</strong> Menggunakan 59 titik koordinat geografi sempadan rasmi Taman Sri Muda yang diekstrak daripada pangkalan data OpenStreetMap (OSM Nominatim).</li>
+    <li><strong>Lokasi PPS Sebenar:</strong> Empat pusat pemindahan yang digunakan merupakan fasiliti komuniti sebenar di Shah Alam:
+        <ol>
+            <li>Dewan Azalea Seksyen 25 (Kapasiti: 500 orang)</li>
+            <li>SK Taman Sri Muda (Kapasiti: 800 orang)</li>
+            <li>Dewan Kenangan MBSA Seksyen 28 (Kapasiti: 1,200 orang)</li>
+            <li>SK Seksyen 16 Shah Alam (Kapasiti: 1,000 orang)</li>
+        </ol>
+    </li>
+</ul>
+
+<h3>C. Adakah Perlu Mendapatkan Kebenaran Agensi Kerajaan?</h3>
+<ul>
+    <li><strong>Untuk Tahap Prototaip / Projek Tahun Akhir (FYP) / Penyelidikan:</strong> <strong>TIDAK PERLU</strong>. Sumber data terbuka antarabangsa (NASA SRTM, OpenStreetMap, OpenWeather) adalah sah di sisi undang-undang, diiktiraf di peringkat global, dan mematuhi standard akademik.</li>
+    <li><strong>Cadangan Naik Taraf Untuk Kegunaan Kerajaan Sebenar (Production):</strong>
+        <ul>
+            <li><strong>JUPEM (Jabatan Ukur dan Pemetaan Malaysia):</strong> Boleh memohon dataset LiDAR resolusi tinggi (ketepatan grid sehingga 0.5m – 1m berbanding radar satelit 30m – 90m).</li>
+            <li><strong>JPS (Jabatan Pengairan dan Saliran):</strong> Boleh mengintegrasikan API sensor telemetri aras air sungai masa-nyata dari stesen Sungai Klang (portal Public InfoBanjir / PRABN).</li>
+            <li><strong>JKM / NADMA:</strong> Integrasi API Info Bencana JKM untuk data pendaftaran mangsa PPS secara automatik.</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>4. MODUL SISTEM & KAWALAN AKSES PENGGUNA (RBAC)</h2>
+<p>
+    Sistem FloodGuard membahagikan fungsinya kepada tiga antara muka berasingan untuk memastikan aliran kerja teratur:
+</p>
+
+<h3>A. Portal Awam (Public Portal - index.html)</h3>
+<ul>
+    <li><strong>Simulasi Gelangsar Hujan (0 – 200 mm/jam):</strong> Penduduk boleh melaras kadar hujan untuk melihat visualisasi kawasan mana yang akan dinaiki air terlebih dahulu.</li>
+    <li><strong>Algoritma Simulasi Air Organik:</strong> Menggunakan gabungan <em>Fractal Brownian Motion (FBM) noise</em> dan <em>Radial Distance Influence</em> ke tebing Sungai Klang bagi menghasilkan visual banjir yang realistik dan merebak mengikut graviti tanah rendah.</li>
+    <li><strong>Mod Cuaca Live:</strong> Mengambil bacaan hujan semasa secara automatik dari OpenWeatherMap.</li>
+    <li><strong>Laluan Evakuasi (Evacuation Routes):</strong> Paparan laluan jalan raya keluar selamat dari zon kediaman menuju ke PPS yang sesuai.</li>
+    <li><strong>Borang SOS Pantas:</strong> Pengguna hanya perlu menekan satu butang untuk menyertakan nama, nombor telefon Malaysia (disahkan dengan regex), dan lokasi koordinat GPS telefon mereka terus ke pangkalan data penyelamat.</li>
+    <li><strong>Action Checklist:</strong> Senarai semak tindakan keselamatan mengikut paras risiko banjir (Safe, Low, Moderate, High, Danger).</li>
+</ul>
+
+<h3>B. Pusat Kawalan Responder / Bomba (responder.html)</h3>
+<ul>
+    <li><strong>Akses Khas:</strong> Log masuk agensi responder (ID: <code>bomba</code> / Katalaluan: <code>bomba123</code>).</li>
+    <li><strong>Peta Misi Menyelamat Live:</strong> Memaparkan kedudukan pin merah mangsa banjir yang telah menekan SOS berserta nama, nombor telefon, dan koordinat tepat.</li>
+    <li><strong>Operasi Dispatch:</strong> Pegawai penyelamat boleh menekan butang <em>Dispatch Team</em> untuk menggerakkan bot dan mengemaskini status mangsa kepada <em>Rescued</em> sebaik sahaja diselamatkan.</li>
+    <li><strong>Pemantauan Kapasiti PPS Semasa:</strong> Memantau jumlah mangsa semasa di setiap dewan agar pasukan penyelamat tidak menghantar mangsa ke pusat pemindahan yang sudah penuh.</li>
+</ul>
+
+<h3>C. Portal Pentadbir (Admin Center - admin.html)</h3>
+<ul>
+    <li><strong>Akses Pentadbir:</strong> Log masuk pentadbir sistem (ID: <code>admin</code> / Katalaluan: <code>admin123</code>).</li>
+    <li><strong>Papan Pemuka Statistik:</strong> Ringkasan bilangan zon pemantauan, jumlah kapasiti PPS, rekod panggilan SOS, dan status sistem.</li>
+    <li><strong>Pengurusan Pangkalan Data (CRUD):</strong> Menambah lokasi PPS baharu, mengemas kini bilangan mangsa (occupancy), menyelaraskan nilai ketinggian zon tanah, serta mencatat log sejarah hujan banjir.</li>
+</ul>
+
+<h2>5. STRUKTUR FAIL & DIREKTORI PROJEK</h2>
+<pre>
+floodguard/
+│
+├── data/
+│   └── raster/
+│       ├── MYS_alt.vrt          # Virtual Raster Dataset elevasi Malaysia
+│       ├── MYS_alt.grd          # Grid header altitud tanah
+│       └── MYS_alt.gri          # Data binari nilai ketinggian
+│
+├── database/
+│   └── init.sql                 # Skrip SQL: Setup PostGIS, jadual spatial & seed data
+│
+├── backend/
+│   ├── main.py                  # API FastAPI (Auth, Weather, Simulate, PPS, SOS endpoints)
+│   ├── models.py                # Model data SQLAlchemy & GeoAlchemy2 (Spatial Geometry)
+│   ├── database.py              # Sambungan engine ke pangkalan data Supabase
+│   ├── requirements.txt         # Senarai pakej Python (fastapi, uvicorn, geoalchemy2, dll.)
+│   ├── Dockerfile               # Kontena Docker untuk backend
+│   └── .env                     # Token selamat OpenWeather & URL Supabase
+│
+├── frontend/
+│   ├── index.html               # Portal utama orang awam
+│   ├── login.html               # Laman log masuk pentadbir & responder
+│   ├── admin.html               # Papan pemuka pentadbir sistem
+│   ├── responder.html           # Papan kawalan misi menyelamat Bomba / NADMA
+│   ├── Dockerfile               # Kontena Docker untuk frontend (Nginx)
+│   ├── css/
+│   │   ├── style.css            # Tema reka bentuk utama (Glassmorphism Dark UI)
+│   │   ├── admin.css            # Gaya papan pemuka pentadbir
+│   │   └── responder.css        # Gaya paparan responder kecemasan
+│   └── js/
+│       ├── script.js            # Enjin simulasi banjir, Leaflet map & API call
+│       ├── admin.js             # Logik CRUD pentadbir untuk PPS, zon & SOS
+│       └── responder.js         # Logik peta operasi menyelamat live Bomba
+│
+├── extract_elevation.py         # Skrip pengekstrakan DEM ke PostGIS menggunakan Rasterio
+├── docker-compose.yml           # Orkestrasi kontena lengkap (Frontend + Backend)
+└── index.html                   # Fail redirect ke frontend/
+</pre>
+
+<h2>6. KESIMPULAN</h2>
+<p>
+    Projek <strong>FloodGuard</strong> berjaya menggabungkan prinsip Kejuruteraan Perisian, Sains Data Geospatial (GIS), dan Pengurusan Bencana Alam ke dalam satu platform bersepadu. Dengan memanfaatkan data topografi saintifik sebenar (NASA SRTM DEM) serta teknologi pangkalan data spatial termaju (PostGIS), sistem ini membuktikan keupayaannya untuk meningkatkan kesiapsiagaan komuniti setempat dan mengoptimumkan operasi menyelamat pihak berkuasa semasa musim tengkujuh di Taman Sri Muda.
+</p>
+
+</body>
+</html>

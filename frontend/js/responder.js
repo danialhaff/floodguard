@@ -62,11 +62,36 @@ function initMap() {
 
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
-    // Dark map style
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4qi2_1_28865e41fc013b41a679bde8', {
-        maxZoom: 19,
-        subdomains: 'abcd'
+    // Basemap Layers (Default: Google Maps Standard Green/Roadmap)
+    const googleStandard = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        attribution: '&copy; Google Maps'
     }).addTo(map);
+
+    const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        attribution: '&copy; Google Maps'
+    });
+
+    const esriDark = L.layerGroup([
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+            minZoom: 1,
+            maxNativeZoom: 16,
+            maxZoom: 20,
+            attribution: 'Tiles &copy; Esri'
+        }),
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+            minZoom: 1,
+            maxNativeZoom: 16,
+            maxZoom: 20
+        })
+    ]);
+
+    L.control.layers({
+        "🗺️ Google Maps (Standard)": googleStandard,
+        "🛰️ Google Satellite": googleSatellite,
+        "🌙 Dark Mode": esriDark
+    }, null, { position: 'topright' }).addTo(map);
 
     sosLayer = L.layerGroup().addTo(map);
     ppsLayer = L.layerGroup().addTo(map);

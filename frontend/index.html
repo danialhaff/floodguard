@@ -7,7 +7,7 @@
     <meta name="description" content="Real-time flood risk monitoring and evacuation planning for Taman Sri Muda, Shah Alam.">
     <meta name="theme-color" content="#06080f">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=focus_clean_v3">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -175,6 +175,24 @@
                             </span>
                         </div>
                     </div>
+
+                    <!-- Interactive Zone Focus Selector -->
+                    <div class="zone-filter-bar" id="zone-filter-bar">
+                        <span class="zone-filter-label">🎯 Focus Route:</span>
+                        <button class="zone-pill active" data-zone="all">All Zones</button>
+                        <button class="zone-pill" data-zone="zone-north" style="--pill-color:#7c3aed">North</button>
+                        <button class="zone-pill" data-zone="zone-east" style="--pill-color:#0891b2">East</button>
+                        <button class="zone-pill" data-zone="zone-center" style="--pill-color:#059669">Central</button>
+                        <button class="zone-pill" data-zone="zone-south" style="--pill-color:#d97706">South</button>
+                        <button class="zone-pill" data-zone="zone-west" style="--pill-color:#be185d">West</button>
+                    </div>
+
+                    <!-- Floating Route Guide Banner -->
+                    <div class="route-focus-banner" id="route-focus-banner" style="display: none;">
+                        <span id="route-focus-text"></span>
+                        <button class="route-focus-reset" id="route-focus-reset">✕ Reset to All</button>
+                    </div>
+
                     <div id="map"></div>
 
                     <!-- Live Weather Widget (Map Overlay) -->
@@ -263,6 +281,6 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/script.js?v=focus_clean_v3"></script>
 </body>
 </html>

@@ -54,9 +54,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi.staticfiles import StaticFiles
+import os
+
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend"))
+if os.path.exists(frontend_path):
+    app.mount("/frontend", StaticFiles(directory=frontend_path, html=True), name="frontend")
+
+# Initialize tables and seed default data if needed
+models.Base.metadata.create_all(bind=database.engine)
+_init_db = database.SessionLocal()
+try:
+    database.seed_default_data(_init_db)
+finally:
+    _init_db.close()
+
 import urllib.request
 import urllib.error
-import os
 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "mock_key_for_demo")
 
@@ -294,8 +308,14 @@ def create_zone(zone: ZoneCreate, db: Session = Depends(database.get_db)):
 
 @app.post("/admin/history")
 def create_history(history: HistoryCreate, db: Session = Depends(database.get_db)):
+    from datetime import datetime, date
+    try:
+        parsed_date = datetime.strptime(history.date, "%Y-%m-%d").date()
+    except Exception:
+        parsed_date = date.today()
+
     new_history = models.RainfallHistory(
-        date=history.date,
+        date=parsed_date,
         rainfall_mm=history.rainfall_mm,
         impact_description=history.impact_description
     )

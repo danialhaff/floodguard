@@ -82,77 +82,48 @@ const PPS_LOCATIONS = [
 ];
 
 // ---- Evacuation Zones within TSM ----
-// Each zone has a colour, label, and assigned PPS
+// Each zone has a colour, label, assigned PPS, and real turn-by-turn road network routes
 const EVAC_ZONES = [
     {
-        id: 'zone-north',
-        name: 'North Zone',
-        color: '#7c3aed',
-        centroid: [3.0375, 101.5340],
-        ppsId: 'pps3',                        // → Dewan MBSA Sek28 (north exit)
-        route: [                               // Waypoints along actual roads
-            [3.0375, 101.5340],
-            [3.0388, 101.5320],
-            [3.0410, 101.5310],
-            [3.0440, 101.5350],
-            [3.0487, 101.5421]
-        ]
+        id: "zone-north",
+        name: "North Zone",
+        color: "#7c3aed",
+        centroid: [3.0375, 101.534],
+        ppsId: "pps3", // → Dewan MBSA Sek28 (north exit via Persiaran Budiman)
+        route: [[3.037504, 101.534103], [3.038333, 101.534074], [3.039675, 101.534058], [3.040804, 101.534018], [3.041617, 101.534017], [3.041698, 101.534014], [3.041873, 101.534009], [3.042356, 101.533998], [3.042671, 101.533992], [3.042754, 101.53399], [3.043569, 101.533942], [3.04397, 101.533861], [3.044021, 101.533842], [3.044066, 101.533801], [3.044128, 101.533712], [3.044169, 101.532828], [3.044206, 101.532038], [3.044218, 101.531799], [3.04422, 101.531738], [3.044328, 101.531745], [3.044677, 101.531766], [3.047936, 101.532036], [3.048321, 101.532068], [3.048386, 101.532115], [3.04841, 101.532159], [3.048447, 101.532251], [3.048381, 101.532845], [3.048342, 101.533379], [3.048319, 101.533788], [3.048297, 101.534369], [3.048284, 101.535019], [3.04832, 101.53542], [3.048341, 101.5356], [3.048426, 101.535952], [3.048515, 101.536193], [3.048596, 101.536413], [3.048806, 101.536794], [3.04919, 101.537394], [3.049927, 101.538542], [3.050368, 101.539267], [3.050475, 101.539433], [3.051462, 101.540911], [3.052123, 101.54193], [3.052443, 101.542649], [3.052534, 101.542814], [3.052577, 101.542893], [3.05264, 101.542996], [3.052741, 101.543069], [3.052896, 101.543105], [3.053036, 101.543181], [3.053163, 101.543306], [3.053247, 101.543463], [3.053281, 101.543638], [3.053262, 101.543815], [3.053199, 101.543967], [3.053098, 101.544095], [3.052971, 101.544188], [3.052825, 101.544245], [3.052668, 101.544261], [3.052563, 101.544249], [3.052461, 101.544218], [3.052366, 101.544169], [3.052226, 101.544046], [3.052131, 101.543885], [3.05209, 101.543703], [3.052107, 101.543517], [3.052167, 101.543367], [3.052266, 101.543239], [3.052318, 101.543114], [3.052345, 101.542974], [3.052355, 101.542846], [3.052342, 101.542785], [3.052323, 101.542694], [3.052087, 101.542186], [3.051795, 101.541639], [3.051268, 101.540867], [3.051081, 101.540749], [3.050995, 101.540718], [3.050925, 101.540717], [3.050876, 101.540732], [3.050225, 101.54111], [3.050016, 101.54123], [3.049479, 101.54154], [3.049342, 101.5416], [3.04922, 101.541619], [3.049081, 101.541642], [3.048796, 101.541634]]
     },
     {
-        id: 'zone-east',
-        name: 'East Zone',
-        color: '#0891b2',
-        centroid: [3.0308, 101.5450],
-        ppsId: 'pps2',                        // → SK Taman Sri Muda (east)
-        route: [
-            [3.0308, 101.5450],
-            [3.0311, 101.5420],
-            [3.0315, 101.5398]
-        ]
+        id: "zone-east",
+        name: "East Zone",
+        color: "#0891b2",
+        centroid: [3.0308, 101.545],
+        ppsId: "pps2", // → SK Taman Sri Muda (east via Jalan Persiaran Aman)
+        route: [[3.030595, 101.545002], [3.030591, 101.544656], [3.030591, 101.54422], [3.030591, 101.543784], [3.030575, 101.543542], [3.030529, 101.543304], [3.030398, 101.542816], [3.030655, 101.542703], [3.030945, 101.542577], [3.031423, 101.542368], [3.031602, 101.54229], [3.03137, 101.541752], [3.030943, 101.540762], [3.030857, 101.540557], [3.030829, 101.540553], [3.030803, 101.540541], [3.030781, 101.540523], [3.030765, 101.5405], [3.030755, 101.540468], [3.030755, 101.540434], [3.030767, 101.540403], [3.030613, 101.540088], [3.03058, 101.540015], [3.02969, 101.538079], [3.029555, 101.53765], [3.029111, 101.535774], [3.028921, 101.535497], [3.028851, 101.535458], [3.028793, 101.535404], [3.028747, 101.535332], [3.028722, 101.535251], [3.028718, 101.535166], [3.028737, 101.535083], [3.028774, 101.535012], [3.028827, 101.534953], [3.028912, 101.534899], [3.02901, 101.534874], [3.02911, 101.53488], [3.029204, 101.534917], [3.02925, 101.53495], [3.029289, 101.534991], [3.029339, 101.535075], [3.029362, 101.53517], [3.029355, 101.535268], [3.029337, 101.535323], [3.029309, 101.535374], [3.029226, 101.535725], [3.029681, 101.537609], [3.029816, 101.538024], [3.029872, 101.53815], [3.030053, 101.538089], [3.030296, 101.538049], [3.030364, 101.538038], [3.030577, 101.538], [3.031239, 101.537885], [3.031796, 101.537795], [3.031817, 101.538406], [3.031823, 101.538595], [3.031841, 101.539112], [3.031861, 101.539706], [3.03165, 101.539872], [3.031564, 101.539838], [3.031537, 101.539781], [3.031537, 101.539781]]
     },
     {
-        id: 'zone-center',
-        name: 'Central Zone',
-        color: '#059669',
-        centroid: [3.0310, 101.5360],
-        ppsId: 'pps1',                        // → Dewan Azalea (closest)
-        route: [
-            [3.0310, 101.5360],
-            [3.0325, 101.5365],
-            [3.0336, 101.5367]
-        ]
+        id: "zone-center",
+        name: "Central Zone",
+        color: "#059669",
+        centroid: [3.031, 101.536],
+        ppsId: "pps1", // → Dewan Azalea (via local access road)
+        route: [[3.030879, 101.536018], [3.030844, 101.535787], [3.030839, 101.535643], [3.030731, 101.535665], [3.030478, 101.535717], [3.030034, 101.535808], [3.030175, 101.536519], [3.030185, 101.536573], [3.0302, 101.536625], [3.030212, 101.536694], [3.030312, 101.537155], [3.030404, 101.537438], [3.030577, 101.538], [3.031239, 101.537885], [3.031796, 101.537795], [3.032213, 101.537724], [3.032508, 101.537674], [3.032791, 101.537627], [3.032972, 101.537624], [3.032905, 101.538055], [3.03311, 101.538084], [3.033407, 101.538109], [3.033668, 101.538131], [3.03391, 101.538151], [3.034149, 101.538171], [3.034268, 101.538181], [3.03429, 101.537988], [3.034369, 101.537291], [3.034388, 101.537119], [3.034304, 101.537109], [3.034193, 101.537093], [3.033828, 101.537046]]
     },
     {
-        id: 'zone-south',
-        name: 'South Zone',
-        color: '#d97706',
-        centroid: [3.0230, 101.5370],
-        ppsId: 'pps4',                        // → SK Seksyen 16 (via lebuhraya)
-        route: [
-            [3.0230, 101.5370],
-            [3.0215, 101.5355],
-            [3.0205, 101.5300],
-            [3.0240, 101.5250],
-            [3.0350, 101.5210],
-            [3.0450, 101.5190],
-            [3.0576, 101.5189]
-        ]
+        id: "zone-south",
+        name: "South Zone",
+        color: "#d97706",
+        centroid: [3.023, 101.537],
+        ppsId: "pps4", // → SK Seksyen 16 (south exit via Jalan Bukit Kemuning & LKSA)
+        route: [[3.023083, 101.536956], [3.023233, 101.537241], [3.023636, 101.537031], [3.023724, 101.536986], [3.024052, 101.536815], [3.024894, 101.536378], [3.025301, 101.536164], [3.025475, 101.536494], [3.02598, 101.53623], [3.026603, 101.535987], [3.02843, 101.535346], [3.028562, 101.535272], [3.028737, 101.535083], [3.028774, 101.535012], [3.028827, 101.534953], [3.028912, 101.534899], [3.02901, 101.534874], [3.02911, 101.53488], [3.029204, 101.534917], [3.02925, 101.53495], [3.029289, 101.534991], [3.029426, 101.535028], [3.029522, 101.535036], [3.029639, 101.535023], [3.029996, 101.534949], [3.032026, 101.534526], [3.032097, 101.534498], [3.032198, 101.534409], [3.032282, 101.534311], [3.03231, 101.534269], [3.032404, 101.534196], [3.032519, 101.534169], [3.032636, 101.534193], [3.032725, 101.534258], [3.0328, 101.53431], [3.032967, 101.534343], [3.035283, 101.534227], [3.036979, 101.534121], [3.038333, 101.534074], [3.039675, 101.534058], [3.040804, 101.534018], [3.041617, 101.534017], [3.041698, 101.534014], [3.041873, 101.534009], [3.042356, 101.533998], [3.042671, 101.533992], [3.042754, 101.53399], [3.043569, 101.533942], [3.04397, 101.533861], [3.044021, 101.533842], [3.044066, 101.533801], [3.044128, 101.533712], [3.044169, 101.532828], [3.044206, 101.532038], [3.044218, 101.531799], [3.04422, 101.531738], [3.044328, 101.531745], [3.044677, 101.531766], [3.047936, 101.532036], [3.048078, 101.53201], [3.048157, 101.531974], [3.048228, 101.531911], [3.048274, 101.531822], [3.048361, 101.531592], [3.048376, 101.531279], [3.048391, 101.531103], [3.048447, 101.530719], [3.048516, 101.529973], [3.048519, 101.529401], [3.048472, 101.528886], [3.048418, 101.528561], [3.048372, 101.528284], [3.048325, 101.528064], [3.048259, 101.527804], [3.048192, 101.527662], [3.048092, 101.527453], [3.04776, 101.526898], [3.04748, 101.526521], [3.047204, 101.526319], [3.046888, 101.526173], [3.046755, 101.526144], [3.046632, 101.526086], [3.04651, 101.525984], [3.04642, 101.525853], [3.046367, 101.525703], [3.046357, 101.525545], [3.046389, 101.525389], [3.046443, 101.525275], [3.04652, 101.525175], [3.046643, 101.525077], [3.046788, 101.525016], [3.046944, 101.524994], [3.047059, 101.525006], [3.04717, 101.525039], [3.047219, 101.525045], [3.047689, 101.525167], [3.047881, 101.525188], [3.048014, 101.525195], [3.048156, 101.525191], [3.048673, 101.525033], [3.049977, 101.524639], [3.050474, 101.524497], [3.05079, 101.52446], [3.051741, 101.524168], [3.052062, 101.524069], [3.052371, 101.523974], [3.053443, 101.523654], [3.054308, 101.523385], [3.054931, 101.523184], [3.056428, 101.522726], [3.057727, 101.522314], [3.058429, 101.522092], [3.058654, 101.521959], [3.058737, 101.521882], [3.058768, 101.52181], [3.058788, 101.521733], [3.058594, 101.521103], [3.058303, 101.520156], [3.058258, 101.520006], [3.058228, 101.519905], [3.058167, 101.519699], [3.058118, 101.519532], [3.058029, 101.519276], [3.058025, 101.519254], [3.05799, 101.519143], [3.057953, 101.519016], [3.057836, 101.518971], [3.057689, 101.518914], [3.057606, 101.518883]]
     },
     {
-        id: 'zone-west',
-        name: 'West Zone',
-        color: '#be185d',
-        centroid: [3.0290, 101.5265],
-        ppsId: 'pps4',                        // → SK Seksyen 16 (via lebuhraya west)
-        route: [
-            [3.0290, 101.5265],
-            [3.0270, 101.5260],
-            [3.0250, 101.5270],
-            [3.0240, 101.5250],
-            [3.0350, 101.5210],
-            [3.0576, 101.5189]
-        ]
-    }
+        id: "zone-west",
+        name: "West Zone",
+        color: "#be185d",
+        centroid: [3.029, 101.5265],
+        ppsId: "pps4", // → SK Seksyen 16 (west exit via LKSA highway)
+        route: [[3.029706, 101.526507], [3.029708, 101.526323], [3.029731, 101.526276], [3.029775, 101.526237], [3.030174, 101.526239], [3.03064, 101.52624], [3.030889, 101.526241], [3.031106, 101.526242], [3.031103, 101.526726], [3.031102, 101.526978], [3.031101, 101.527268], [3.031099, 101.527743], [3.031098, 101.528122], [3.031097, 101.528241], [3.031095, 101.528877], [3.031093, 101.529202], [3.031032, 101.529433], [3.030929, 101.529689], [3.031205, 101.529951], [3.0315, 101.530392], [3.031876, 101.531359], [3.031995, 101.531766], [3.032062, 101.532], [3.032162, 101.532608], [3.032421, 101.533937], [3.032458, 101.534027], [3.032536, 101.534124], [3.032636, 101.534193], [3.032725, 101.534258], [3.0328, 101.53431], [3.032967, 101.534343], [3.035283, 101.534227], [3.036979, 101.534121], [3.038333, 101.534074], [3.039675, 101.534058], [3.040804, 101.534018], [3.041617, 101.534017], [3.041698, 101.534014], [3.041873, 101.534009], [3.042356, 101.533998], [3.042671, 101.533992], [3.042754, 101.53399], [3.043569, 101.533942], [3.04397, 101.533861], [3.044021, 101.533842], [3.044066, 101.533801], [3.044128, 101.533712], [3.044169, 101.532828], [3.044206, 101.532038], [3.044218, 101.531799], [3.04422, 101.531738], [3.044328, 101.531745], [3.044677, 101.531766], [3.047936, 101.532036], [3.048078, 101.53201], [3.048157, 101.531974], [3.048228, 101.531911], [3.048274, 101.531822], [3.048361, 101.531592], [3.048376, 101.531279], [3.048391, 101.531103], [3.048447, 101.530719], [3.048516, 101.529973], [3.048519, 101.529401], [3.048472, 101.528886], [3.048418, 101.528561], [3.048372, 101.528284], [3.048325, 101.528064], [3.048259, 101.527804], [3.048192, 101.527662], [3.048092, 101.527453], [3.04776, 101.526898], [3.04748, 101.526521], [3.047204, 101.526319], [3.046888, 101.526173], [3.046755, 101.526144], [3.046632, 101.526086], [3.04651, 101.525984], [3.04642, 101.525853], [3.046367, 101.525703], [3.046357, 101.525545], [3.046389, 101.525389], [3.046443, 101.525275], [3.04652, 101.525175], [3.046643, 101.525077], [3.046788, 101.525016], [3.046944, 101.524994], [3.047059, 101.525006], [3.04717, 101.525039], [3.047219, 101.525045], [3.047689, 101.525167], [3.047881, 101.525188], [3.048014, 101.525195], [3.048156, 101.525191], [3.048673, 101.525033], [3.049977, 101.524639], [3.050474, 101.524497], [3.05079, 101.52446], [3.051741, 101.524168], [3.052062, 101.524069], [3.052371, 101.523974], [3.053443, 101.523654], [3.054308, 101.523385], [3.054931, 101.523184], [3.056428, 101.522726], [3.057727, 101.522314], [3.058429, 101.522092], [3.058654, 101.521959], [3.058737, 101.521882], [3.058768, 101.52181], [3.058788, 101.521733], [3.058594, 101.521103], [3.058303, 101.520156], [3.058258, 101.520006], [3.058228, 101.519905], [3.058167, 101.519699], [3.058118, 101.519532], [3.058029, 101.519276], [3.058025, 101.519254], [3.05799, 101.519143], [3.057953, 101.519016], [3.057836, 101.518971], [3.057689, 101.518914], [3.057606, 101.518883]]
+    },
 ];
 
 // ---- Ray-Casting Point-in-Polygon ----
@@ -256,10 +227,53 @@ for (let r = 0; r < GRID_ROWS; r++) {
 
 // ---- Map Init ----
 const map = L.map('map', { zoomControl: true }).setView([3.0295, 101.5360], 14);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4qi2_1_28865e41fc013b41a679bde8', {
-    maxZoom: 19, attribution: '© OpenStreetMap contributors · © CARTO',
-    subdomains: 'abcd'
-}).addTo(map);
+
+// Basemap Layers (Default: Google Maps Standard Green/Roadmap)
+const googleStandard = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    attribution: '&copy; Google Maps'
+});
+
+const googleTerrain = L.tileLayer('https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    attribution: '&copy; Google Maps'
+});
+
+const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    attribution: '&copy; Google Maps'
+});
+
+const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+});
+
+const esriDark = L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        minZoom: 1,
+        maxNativeZoom: 16,
+        maxZoom: 20,
+        attribution: 'Tiles &copy; Esri'
+    }),
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+        minZoom: 1,
+        maxNativeZoom: 16,
+        maxZoom: 20
+    })
+]);
+
+// Set Google Maps Standard as default
+googleStandard.addTo(map);
+
+// Add base map selector control
+L.control.layers({
+    "🗺️ Google Maps (Standard)": googleStandard,
+    "⛰️ Google Terrain": googleTerrain,
+    "🛰️ Google Satellite": googleSatellite,
+    "🌍 OpenStreetMap": osmStandard,
+    "🌙 Dark Mode": esriDark
+}, null, { position: 'topright' }).addTo(map);
 
 // (E) Create custom pane for shimmer effect
 map.createPane('floodPane');
@@ -311,17 +325,82 @@ PPS_LOCATIONS.forEach(pps => {
     ppsMap[pps.id] = marker;
 });
 
-// ---- Zone Labels ----
+// ---- Zone Focus State & Controller ----
+let activeFocusedZoneId = null;
+
+function focusZone(zoneId) {
+    activeFocusedZoneId = (activeFocusedZoneId === zoneId) ? null : zoneId;
+
+    // Update pill buttons
+    document.querySelectorAll('.zone-pill').forEach(pill => {
+        if (!activeFocusedZoneId && pill.dataset.zone === 'all') {
+            pill.classList.add('active');
+        } else if (pill.dataset.zone === activeFocusedZoneId) {
+            pill.classList.add('active');
+        } else {
+            pill.classList.remove('active');
+        }
+    });
+
+    // Update route banner
+    const banner = document.getElementById('route-focus-banner');
+    const bannerText = document.getElementById('route-focus-text');
+    if (activeFocusedZoneId) {
+        const zone = EVAC_ZONES.find(z => z.id === activeFocusedZoneId);
+        const pps = PPS_LOCATIONS.find(p => p.id === zone.ppsId);
+        if (banner && bannerText && zone && pps) {
+            bannerText.innerHTML = `📍 <b>${zone.name} Corridor:</b> Follow glowing path to <b>${pps.name}</b>`;
+            banner.style.borderLeftColor = zone.color;
+            banner.style.display = 'flex';
+        }
+        if (zone) {
+            map.flyTo(zone.centroid, 14, { duration: 0.6 });
+        }
+    } else {
+        if (banner) banner.style.display = 'none';
+        map.flyTo([3.0295, 101.5360], 14, { duration: 0.6 });
+    }
+
+    // Refresh routes with new focus state
+    const currentRain = Number(slider ? slider.value : 0);
+    drawEvacuationRoutes(currentRain);
+}
+window.focusZone = focusZone;
+
+// Bind Zone Filter Bar
+function initZoneFilter() {
+    const bar = document.getElementById('zone-filter-bar');
+    if (bar) {
+        bar.addEventListener('click', (e) => {
+            const pill = e.target.closest('.zone-pill');
+            if (!pill) return;
+            const target = pill.dataset.zone === 'all' ? null : pill.dataset.zone;
+            focusZone(target);
+        });
+    }
+    const resetBtn = document.getElementById('route-focus-reset');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => focusZone(null));
+    }
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initZoneFilter);
+} else {
+    initZoneFilter();
+}
+
+// ---- Zone Labels (Interactive) ----
 EVAC_ZONES.forEach(zone => {
     const zoneIcon = L.divIcon({
         className: '',
-        html: `<div class="zone-label" style="border-color:${zone.color};color:${zone.color}">${zone.name}</div>`,
-        iconSize: [90, 26], iconAnchor: [45, 13]
+        html: `<div class="zone-label" style="border-color:${zone.color};color:${zone.color};cursor:pointer;" title="Click to isolate ${zone.name} route">${zone.name}</div>`,
+        iconSize: [84, 24], iconAnchor: [42, 12]
     });
-    L.marker(zone.centroid, { icon: zoneIcon, interactive: false }).addTo(map);
+    const zm = L.marker(zone.centroid, { icon: zoneIcon, interactive: true }).addTo(map);
+    zm.on('click', () => focusZone(zone.id));
 });
 
-// ---- Evacuation Route Layers (Redesigned) ----
+// ---- Evacuation Route Layers (Redesigned & De-cluttered) ----
 let routeLayers = [];
 let routeAnimFrame = null;
 
@@ -340,19 +419,13 @@ function bearing(from, to) {
     return Math.atan2(dLng, dLat) * (180 / Math.PI);
 }
 
-// Get the midpoint of a segment
-function midpoint(a, b) {
-    return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-}
-
-// Create a proper SVG triangle arrowhead marker
-function createArrowMarker(position, angle, color, size) {
+// Create a small, elegant SVG chevron direction marker
+function createArrowMarker(position, angle, color, size = 12) {
     const icon = L.divIcon({
         className: '',
         html: `<div class="route-arrow" style="transform:rotate(${angle - 90}deg)">
             <svg width="${size}" height="${size}" viewBox="0 0 24 24">
-                <polygon points="4,2 20,12 4,22" fill="${color}" opacity="0.95"/>
-                <polygon points="4,2 20,12 4,22" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <polygon points="6,4 18,12 6,20" fill="${color}" opacity="0.95"/>
             </svg>
         </div>`,
         iconSize: [size, size],
@@ -369,131 +442,141 @@ function drawEvacuationRoutes(rainfall) {
     if (rainfall < 50) return;
 
     const urgency = rainfall >= 150 ? 'high' : rainfall >= 100 ? 'moderate' : 'low';
-    const glowWeight = urgency === 'high' ? 12 : 8;
-    const lineWeight = urgency === 'high' ? 4.5 : 3;
-    const arrowSize = urgency === 'high' ? 22 : 18;
 
     EVAC_ZONES.forEach(zone => {
         const pps = PPS_LOCATIONS.find(p => p.id === zone.ppsId);
+        const isExplicitSelected = (activeFocusedZoneId === zone.id);
+        const isFocused = (activeFocusedZoneId === null || isExplicitSelected);
 
-        // Layer 1: Glow trail (wide, semi-transparent, blurred feel)
-        const glowLine = L.polyline(zone.route, {
-            color: zone.color,
-            weight: glowWeight,
-            opacity: 0.15,
-            lineCap: 'round',
-            lineJoin: 'round',
-            pane: 'routeGlowPane',
-            interactive: false
-        }).addTo(map);
+        // Opacity and weight tuning: if a zone is focused, dim all other routes
+        const lineOpacity = isExplicitSelected ? 1.0 : (activeFocusedZoneId === null ? 0.85 : 0.10);
+        const lineWeight = isExplicitSelected ? 4.5 : (activeFocusedZoneId === null ? 3.0 : 1.5);
+        const glowOpacity = isExplicitSelected ? 0.30 : (activeFocusedZoneId === null ? 0.12 : 0);
+        const glowWeight = isExplicitSelected ? 10 : 5;
 
-        // Layer 2: Main route line (solid with animated dash)
+        // Layer 1: Glow trail
+        if (glowOpacity > 0) {
+            const glowLine = L.polyline(zone.route, {
+                color: zone.color,
+                weight: glowWeight,
+                opacity: glowOpacity,
+                lineCap: 'round',
+                lineJoin: 'round',
+                pane: 'routeGlowPane',
+                interactive: false
+            }).addTo(map);
+            routeLayers.push(glowLine);
+        }
+
+        // Layer 2: Main route line with flowing dash
         const routeLine = L.polyline(zone.route, {
             color: zone.color,
             weight: lineWeight,
-            opacity: 0.9,
-            dashArray: '12, 8',
+            opacity: lineOpacity,
+            dashArray: '10, 8',
             lineCap: 'round',
             lineJoin: 'round',
             pane: 'routeLinePane',
-            className: `evac-route evac-route--${urgency}`
+            className: `evac-route ${isExplicitSelected ? 'evac-route-flow' : ''}`
         }).addTo(map);
 
-        // Layer 3: Filled triangle arrows at midpoints of each segment
-        for (let i = 0; i < zone.route.length - 1; i++) {
-            const from = zone.route[i];
-            const to = zone.route[i + 1];
-            const mid = midpoint(from, to);
-            const angle = bearing(from, to);
-            const arrow = createArrowMarker(mid, angle, zone.color, arrowSize);
-            arrow.addTo(map);
-            routeLayers.push(arrow);
+        routeLine.on('click', () => focusZone(zone.id));
+        routeLayers.push(routeLine);
 
-            // For long segments, add an extra arrow at 75%
-            const segLen = Math.hypot(to[0] - from[0], to[1] - from[1]);
-            if (segLen > 0.008) {
-                const q3 = [from[0] + (to[0] - from[0]) * 0.75, from[1] + (to[1] - from[1]) * 0.75];
-                const arrow2 = createArrowMarker(q3, angle, zone.color, arrowSize - 2);
-                arrow2.addTo(map);
-                routeLayers.push(arrow2);
+        // Layer 3: ONLY place 2-3 sleek direction chevrons (proportional, NOT on every point!)
+        if (isFocused && zone.route.length > 6) {
+            const numArrows = isExplicitSelected ? 4 : 2;
+            for (let a = 1; a <= numArrows; a++) {
+                const idx = Math.min(zone.route.length - 2, Math.floor((a / (numArrows + 1)) * zone.route.length));
+                const from = zone.route[idx];
+                const to = zone.route[idx + 1];
+                const angle = bearing(from, to);
+                const arrow = createArrowMarker(from, angle, zone.color, isExplicitSelected ? 13 : 10);
+                arrow.addTo(map);
+                routeLayers.push(arrow);
             }
         }
 
-        // Origin pulse marker
-        const originIcon = L.divIcon({
-            className: '',
-            html: `<div class="route-origin-marker ${urgency}">
-                <div class="route-origin-ring" style="border-color:${zone.color}"></div>
-                <div class="route-origin-core" style="background:${zone.color}"></div>
-            </div>`,
-            iconSize: [24, 24], iconAnchor: [12, 12]
-        });
-        const originMarker = L.marker(zone.centroid, { icon: originIcon, interactive: false }).addTo(map);
+        // Origin beacon
+        if (isFocused) {
+            const originIcon = L.divIcon({
+                className: '',
+                html: `<div class="route-origin-marker ${urgency}" style="cursor:pointer;" title="Click to isolate ${zone.name}">
+                    <div class="route-origin-ring" style="border-color:${zone.color}"></div>
+                    <div class="route-origin-core" style="background:${zone.color}"></div>
+                </div>`,
+                iconSize: [20, 20], iconAnchor: [10, 10]
+            });
+            const originMarker = L.marker(zone.centroid, { icon: originIcon, interactive: true }).addTo(map);
+            originMarker.on('click', () => focusZone(zone.id));
+            routeLayers.push(originMarker);
+        }
 
         // Destination highlight ring on PPS
-        const destIcon = L.divIcon({
-            className: '',
-            html: `<div class="route-dest-ring" style="border-color:${zone.color}"></div>`,
-            iconSize: [44, 44], iconAnchor: [22, 22]
-        });
-        const destMarker = L.marker(zone.route[zone.route.length - 1], { icon: destIcon, interactive: false }).addTo(map);
+        if (isExplicitSelected) {
+            const destIcon = L.divIcon({
+                className: '',
+                html: `<div class="route-dest-ring" style="border-color:${zone.color}"></div>`,
+                iconSize: [36, 36], iconAnchor: [18, 18]
+            });
+            const destMarker = L.marker(zone.route[zone.route.length - 1], { icon: destIcon, interactive: false }).addTo(map);
+            routeLayers.push(destMarker);
+        }
 
         // Popup on route click
         routeLine.bindPopup(`
             <div class="route-popup">
-                <div class="route-popup-title" style="color:${zone.color}">🚨 Evacuation Route — ${zone.name}</div>
-                <div class="route-popup-dest">→ <b>${pps.name}</b></div>
-                <div class="route-popup-cap">Capacity: ${pps.capacity.toLocaleString()} people</div>
+                <div class="route-popup-title" style="color:${zone.color}">🚨 Evacuation Corridor — ${zone.name}</div>
+                <div class="route-popup-dest">→ Designated PPS: <b>${pps.name}</b></div>
+                <div class="route-popup-cap">Capacity: ${pps.capacity.toLocaleString()} evacuees</div>
                 <div class="route-popup-urgent ${urgency}">
-                    ${urgency === 'high' ? '⚠️ EVACUATE NOW! Dangerous flood level!' :
-                      urgency === 'moderate' ? '⚡ Prepare to evacuate' :
+                    ${urgency === 'high' ? '⚠️ EVACUATE NOW! High Flood Danger!' :
+                      urgency === 'moderate' ? '⚡ Prepare for evacuation' :
                       '📢 Monitor situation, stay alert'}
                 </div>
             </div>
         `, { maxWidth: 240 });
-
-        routeLayers.push(glowLine, routeLine, originMarker, destMarker);
     });
 }
 
-// ---- Flood Visualization (A-F: Complete overhaul) ----
+// ---- Flood Visualization (Realistic Hydrological Water Depth Scale) ----
 let gridLayer = null;
 let contourLayer = null;
 let shimmerActive = false;
 
-// (C) Dramatic color ramp: transparent → cyan → indigo → magenta → crimson
 function getFloodColor(rainfall, vulnerability) {
     const intensity = Math.min(1.0, (rainfall / 200) * 1.5 * vulnerability);
-    if (rainfall === 0 || intensity < 0.03) return null;
+    if (rainfall === 0 || intensity < 0.04) return null;
 
-    // Smooth HSL interpolation for cinematic gradient
-    let h, s, l, opacity;
-    if (intensity < 0.15) {
-        // Very low: transparent cyan
-        h = 195; s = 80; l = 70; opacity = 0.12 + intensity * 1.2;
-    } else if (intensity < 0.30) {
-        // Low: cyan
-        const t = (intensity - 0.15) / 0.15;
-        h = 195 - t * 10; s = 85; l = 65 - t * 8; opacity = 0.28 + t * 0.12;
-    } else if (intensity < 0.50) {
-        // Medium: deep blue / indigo
-        const t = (intensity - 0.30) / 0.20;
-        h = 225 + t * 15; s = 75 + t * 10; l = 50 - t * 10; opacity = 0.40 + t * 0.15;
-    } else if (intensity < 0.70) {
-        // High: indigo → magenta
-        const t = (intensity - 0.50) / 0.20;
-        h = 260 + t * 30; s = 80; l = 42 - t * 5; opacity = 0.55 + t * 0.12;
-    } else if (intensity < 0.85) {
-        // Very high: magenta → warm red
-        const t = (intensity - 0.70) / 0.15;
-        h = 330 + t * 20; s = 80 + t * 10; l = 45 - t * 5; opacity = 0.65 + t * 0.10;
+    // Translucent depth scale: ensures roads, street names, and satellite view stay readable
+    let fill, opacity;
+    if (intensity < 0.20) {
+        // Shallow runoff (< 0.3m): Gentle sky blue
+        fill = '#38bdf8';
+        opacity = 0.16 + intensity * 0.4;
+    } else if (intensity < 0.45) {
+        // Low / water accumulation (0.3m - 0.7m): Royal blue
+        const t = (intensity - 0.20) / 0.25;
+        fill = '#2563eb';
+        opacity = 0.22 + t * 0.06;
+    } else if (intensity < 0.72) {
+        // Moderate / road impassable for cars (0.7m - 1.2m): Amber
+        const t = (intensity - 0.45) / 0.27;
+        fill = '#f59e0b';
+        opacity = 0.28 + t * 0.06;
+    } else if (intensity < 0.88) {
+        // Severe inundation (1.2m - 1.8m): Vivid orange-red
+        const t = (intensity - 0.72) / 0.16;
+        fill = '#ea580c';
+        opacity = 0.33 + t * 0.05;
     } else {
-        // Danger: crimson red
-        const t = Math.min(1, (intensity - 0.85) / 0.15);
-        h = 0; s = 85 + t * 10; l = 45 - t * 8; opacity = 0.75 + t * 0.12;
+        // Danger / critical chest-deep (> 1.8m): Translucent Crimson Red
+        const t = Math.min(1, (intensity - 0.88) / 0.12);
+        fill = '#dc2626';
+        opacity = 0.38 + t * 0.05; // Maximum 0.43 opacity!
     }
 
-    return { fill: `hsl(${h}, ${s}%, ${l}%)`, opacity };
+    return { fill, opacity };
 }
 
 // (F) Contour iso-lines at depth thresholds
@@ -583,21 +666,20 @@ const legend = L.control({ position: 'bottomright' });
 legend.onAdd = function () {
     const div = L.DomUtil.create('div', 'map-legend');
     div.innerHTML = `
-        <div class="legend-title">🌊 Flood Level</div>
-        <div class="legend-item"><span style="background:#bfdbfe"></span> Very Low</div>
-        <div class="legend-item"><span style="background:#60a5fa"></span> Low</div>
-        <div class="legend-item"><span style="background:#2563eb"></span> Moderate</div>
-        <div class="legend-item"><span style="background:#1e3a8a"></span> High</div>
-        <div class="legend-item"><span style="background:#f97316"></span> Very High</div>
-        <div class="legend-item"><span style="background:#ef4444"></span> ⚠️ Danger</div>
+        <div class="legend-title">🌊 Water Depth (Est.)</div>
+        <div class="legend-item"><span style="background:#38bdf8"></span> &lt; 0.3m (Ankle / Shallow)</div>
+        <div class="legend-item"><span style="background:#2563eb"></span> 0.3m – 0.7m (Knee / Car Alert)</div>
+        <div class="legend-item"><span style="background:#f59e0b"></span> 0.7m – 1.2m (Waist / Impassable)</div>
+        <div class="legend-item"><span style="background:#ea580c"></span> 1.2m – 1.8m (Chest / Danger)</div>
+        <div class="legend-item"><span style="background:#dc2626"></span> &gt; 1.8m (Critical / Submerged)</div>
         <div class="legend-divider"></div>
-        <div class="legend-title">🚨 Evacuation Routes</div>
-        <div class="legend-item"><span style="background:#7c3aed"></span> North Zone → Dewan MBSA</div>
-        <div class="legend-item"><span style="background:#0891b2"></span> East Zone → SK Sri Muda</div>
-        <div class="legend-item"><span style="background:#059669"></span> Central Zone → Dewan Azalea</div>
-        <div class="legend-item"><span style="background:#d97706"></span> South Zone → SK Sek16</div>
-        <div class="legend-item"><span style="background:#be185d"></span> West Zone → SK Sek16</div>
-        <div class="legend-note">Routes appear when rainfall &gt; 50mm</div>
+        <div class="legend-title">🚨 Evacuation Corridors</div>
+        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-north')"><span style="background:#7c3aed"></span> North → Dewan MBSA</div>
+        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-east')"><span style="background:#0891b2"></span> East → SK Sri Muda</div>
+        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-center')"><span style="background:#059669"></span> Central → Dewan Azalea</div>
+        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-south')"><span style="background:#d97706"></span> South → SK Sek16</div>
+        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-west')"><span style="background:#be185d"></span> West → SK Sek16</div>
+        <div class="legend-note">💡 Click corridor to isolate on map</div>
     `;
     return div;
 };
@@ -938,21 +1020,20 @@ simulateFlood(0);
 
     const LEGEND_HTML = `
         <div class="mobile-legend-popup" id="mobile-legend-popup">
-            <div class="legend-title">🌊 Flood Level</div>
-            <div class="legend-item"><span style="background:#bfdbfe"></span> Very Low</div>
-            <div class="legend-item"><span style="background:#60a5fa"></span> Low</div>
-            <div class="legend-item"><span style="background:#2563eb"></span> Moderate</div>
-            <div class="legend-item"><span style="background:#1e3a8a"></span> High</div>
-            <div class="legend-item"><span style="background:#f97316"></span> Very High</div>
-            <div class="legend-item"><span style="background:#ef4444"></span> ⚠️ Danger</div>
+            <div class="legend-title">🌊 Water Depth (Est.)</div>
+            <div class="legend-item"><span style="background:#38bdf8"></span> &lt; 0.3m (Ankle)</div>
+            <div class="legend-item"><span style="background:#2563eb"></span> 0.3m – 0.7m (Knee)</div>
+            <div class="legend-item"><span style="background:#f59e0b"></span> 0.7m – 1.2m (Waist)</div>
+            <div class="legend-item"><span style="background:#ea580c"></span> 1.2m – 1.8m (Chest)</div>
+            <div class="legend-item"><span style="background:#dc2626"></span> &gt; 1.8m (Critical)</div>
             <div class="legend-divider"></div>
-            <div class="legend-title">🚨 Evacuation Routes</div>
-            <div class="legend-item"><span style="background:#7c3aed"></span> North → Dewan MBSA</div>
-            <div class="legend-item"><span style="background:#0891b2"></span> East → SK Sri Muda</div>
-            <div class="legend-item"><span style="background:#059669"></span> Central → Dewan Azalea</div>
-            <div class="legend-item"><span style="background:#d97706"></span> South → SK Sek16</div>
-            <div class="legend-item"><span style="background:#be185d"></span> West → SK Sek16</div>
-            <div class="legend-note">Routes appear when rainfall &gt; 50mm</div>
+            <div class="legend-title">🚨 Evacuation Corridors</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-north')"><span style="background:#7c3aed"></span> North → Dewan MBSA</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-east')"><span style="background:#0891b2"></span> East → SK Sri Muda</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-center')"><span style="background:#059669"></span> Central → Dewan Azalea</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-south')"><span style="background:#d97706"></span> South → SK Sek16</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-west')"><span style="background:#be185d"></span> West → SK Sek16</div>
+            <div class="legend-note">💡 Tap corridor to isolate</div>
         </div>`;
 
     let open = false;
