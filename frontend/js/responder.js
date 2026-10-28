@@ -48,10 +48,13 @@ const EVAC_ZONES = [
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    initMobileSidebar();
+    initResponderNav();
     initMap();
     loadData();
     // Refresh data every 10 seconds
     setInterval(loadData, 10000);
+    setTimeout(() => { if (map) map.invalidateSize(); }, 300);
 });
 
 function initMap() {
@@ -225,6 +228,8 @@ function renderSOS(sosList) {
 
     document.getElementById('sos-pending-count').textContent = pending;
     document.getElementById('sos-resolved-count').textContent = dispatched;
+    const navBadge = document.getElementById('nav-sos-badge');
+    if (navBadge) navBadge.textContent = pending;
 }
 
 function renderPPS(ppsList) {
@@ -307,4 +312,84 @@ function showToast(msg, type='info') {
         t.style.animation = 'slideIn 0.3s ease-out reverse forwards';
         setTimeout(() => t.remove(), 300);
     }, 3000);
+}
+
+// --- Mobile Sidebar Toggle ---
+function initMobileSidebar() {
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const hamburger = document.getElementById('hamburger-btn');
+
+    if (!hamburger || !sidebar || !overlay) return;
+
+    function openSidebar() {
+        sidebar.classList.add('is-open');
+        overlay.classList.add('is-open');
+        hamburger.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+    }
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = sidebar.classList.contains('is-open');
+        isOpen ? closeSidebar() : openSidebar();
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+    window._closeMobileSidebar = closeSidebar;
+}
+
+// --- Sidebar Navigation & Actions ---
+function initResponderNav() {
+    const navItems = document.querySelectorAll('.admin-nav .nav-item[data-target]');
+    const controlSection = document.getElementById('control-section');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            navItems.forEach(n => n.classList.remove('active'));
+            item.classList.add('active');
+
+            if (window._closeMobileSidebar) window._closeMobileSidebar();
+
+            const target = item.getAttribute('data-target');
+            if (target === 'dispatch') {
+                if (map) map.flyTo([3.0300, 101.5300], 14, { duration: 0.8 });
+                if (controlSection) controlSection.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (target === 'sos') {
+                const secSos = document.getElementById('sec-sos');
+                if (secSos) secSos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const firstKey = Object.keys(sosMarkers)[0];
+                if (firstKey && sosMarkers[firstKey]) {
+                    const m = sosMarkers[firstKey];
+                    map.flyTo(m.getLatLng(), 15, { duration: 0.8 });
+                    m.openPopup();
+                }
+            } else if (target === 'pps') {
+                const secPps = document.getElementById('sec-pps');
+                if (secPps) secPps.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (map) map.flyTo([3.0325, 101.5380], 14.5, { duration: 0.8 });
+            } else if (target === 'zones') {
+                if (map) map.flyTo([3.0295, 101.5360], 14, { duration: 0.8 });
+            }
+        });
+    });
+
+    const logoutBtn = document.getElementById('btn-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            sessionStorage.removeItem('responder_token');
+            sessionStorage.removeItem('admin_token');
+            window.location.href = 'login.html';
+        });
+    }
+
+    window.addEventListener('resize', () => {
+        if (map) map.invalidateSize();
+    });
 }
