@@ -642,10 +642,15 @@ body {
     cursor: pointer;
 }
 
+/* ---- Leaflet Top Controls Position (Avoid overlapping zone-filter-bar) ---- */
+.leaflet-top {
+    top: 50px !important;
+}
+
 /* ---- Interactive Zone Filter Bar ---- */
 .zone-filter-bar {
     position: absolute;
-    top: 50px;
+    top: 48px;
     left: 12px;
     z-index: 500;
     display: flex;
@@ -659,6 +664,11 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     max-width: calc(100% - 24px);
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.zone-filter-bar::-webkit-scrollbar {
+    display: none;
 }
 .zone-filter-label {
     font-size: 0.70rem;
@@ -960,6 +970,44 @@ body {
     .map-badges { gap: 4px; }
     .map-badge { font-size: 0.6rem; padding: 3px 7px; }
 
+    /* Cleanly lower zoom +- and map layer icon below the focus route bar on mobile */
+    .leaflet-top {
+        top: 54px !important;
+    }
+    .leaflet-control-zoom,
+    .leaflet-control-layers {
+        margin: 6px 10px !important;
+    }
+
+    /* Keep focus route bar compact & comfortable on mobile */
+    .zone-filter-bar {
+        top: 44px;
+        left: 8px;
+        max-width: calc(100% - 16px);
+        padding: 3px 6px;
+        gap: 4px;
+    }
+    .zone-filter-label {
+        font-size: 0.65rem;
+        margin-right: 2px;
+    }
+    .zone-pill {
+        font-size: 0.66rem;
+        padding: 2.5px 7px;
+    }
+
+    /* Reposition route guidance banner above mobile buttons */
+    .route-focus-banner {
+        top: auto;
+        bottom: 78px;
+        left: 10px;
+        right: 10px;
+        justify-content: space-between;
+        padding: 6px 12px;
+        font-size: 0.70rem;
+        border-radius: 12px;
+    }
+
     /* Drawer panels */
     .drawer-content .panel { margin-bottom: 10px; }
     .drawer-content .sidebar-footer { grid-template-columns: 1fr 1fr 1fr; margin-top: 0; }
@@ -1101,14 +1149,14 @@ input:checked + .slider-toggle:before { transform: translateX(20px); }
 
 @media (max-width: 768px) {
     .weather-widget, #weather-widget.leaflet-control {
-        position: fixed !important;
+        position: absolute !important;
         bottom: auto !important;
-        top: 48px !important; /* Stay below the map badges */
+        top: 102px !important; /* Stay safely below the layer selector icon */
         right: 10px !important;
         left: auto !important;
-        padding: 8px 10px !important;
-        width: 130px !important;
-        min-width: 130px !important;
+        padding: 6px 9px !important;
+        width: 120px !important;
+        min-width: 120px !important;
         margin: 0 !important;
         border-radius: 8px !important;
     }
