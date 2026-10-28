@@ -783,7 +783,7 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.55);
-    z-index: 500;
+    z-index: 1500;
     backdrop-filter: blur(4px);
     opacity: 0;
     pointer-events: none;          /* FIX: don't block map touches when hidden */
@@ -859,7 +859,7 @@ body {
     display: none;
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    z-index: 600;
+    z-index: 2000;
     background: rgba(12,17,32,0.98);
     border-top: 1px solid var(--border-glow);
     border-radius: 22px 22px 0 0;
@@ -872,6 +872,16 @@ body {
     flex-direction: column;
 }
 .mobile-drawer.active { transform: translateY(0); }
+
+/* Hide SOS button completely when drawer or overlay is active */
+.mobile-drawer.active ~ .sos-btn,
+.mobile-overlay.active ~ .sos-btn {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+    transform: translateY(-20px) !important;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+}
 
 .drawer-handle-bar {
     display: flex;

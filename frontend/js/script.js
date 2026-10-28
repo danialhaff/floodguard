@@ -962,6 +962,11 @@ simulateFlood(0);
         document.body.style.overflow = 'hidden';
         fab.style.opacity = '0';
         fab.style.pointerEvents = 'none';
+        const sosBtn = document.getElementById('btn-sos');
+        if (sosBtn) {
+            sosBtn.style.opacity = '0';
+            sosBtn.style.pointerEvents = 'none';
+        }
     }
 
     function closeDrawer() {
@@ -970,6 +975,11 @@ simulateFlood(0);
         document.body.style.overflow = '';
         fab.style.opacity = '1';
         fab.style.pointerEvents = '';
+        const sosBtn = document.getElementById('btn-sos');
+        if (sosBtn) {
+            sosBtn.style.opacity = '';
+            sosBtn.style.pointerEvents = '';
+        }
     }
 
     fab.addEventListener('click', openDrawer);
