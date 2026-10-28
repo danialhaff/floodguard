@@ -644,13 +644,13 @@ body {
 
 /* ---- Leaflet Top Controls Position (Avoid overlapping zone-filter-bar) ---- */
 .leaflet-top {
-    top: 50px !important;
+    top: 46px !important;
 }
 
 /* ---- Interactive Zone Filter Bar ---- */
 .zone-filter-bar {
     position: absolute;
-    top: 48px;
+    top: 52px;
     left: 12px;
     z-index: 500;
     display: flex;
@@ -970,18 +970,18 @@ body {
     .map-badges { gap: 4px; }
     .map-badge { font-size: 0.6rem; padding: 3px 7px; }
 
-    /* Cleanly lower zoom +- and map layer icon below the focus route bar on mobile */
+    /* Raise zoom +- and map layer icon up slightly below the focus route bar on mobile */
     .leaflet-top {
-        top: 54px !important;
+        top: 45px !important;
     }
     .leaflet-control-zoom,
     .leaflet-control-layers {
-        margin: 6px 10px !important;
+        margin: 5px 10px !important;
     }
 
-    /* Keep focus route bar compact & comfortable on mobile */
+    /* Move focus route bar down to give a comfortable gap from top header */
     .zone-filter-bar {
-        top: 44px;
+        top: 52px;
         left: 8px;
         max-width: calc(100% - 16px);
         padding: 3px 6px;
