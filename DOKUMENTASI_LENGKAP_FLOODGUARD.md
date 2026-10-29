@@ -65,11 +65,13 @@ $$Vulnerability(lat, lng) = w_1 \cdot \text{ProximityToRiver}(lat, lng) + w_2 \c
 
 ### 1.4 Teori Navigasi Laluan: Mengapa OSRM Road Routing?
 - **Masalah Pendekatan Awal:** Laluan garisan lurus (*Euclidean line / straight-line*) sebelum ini merentas bangunan rumah, sungai, dan padang permainan yang tidak boleh dilalui oleh manusia.
-- **Penyelesaian Kejuruteraan:** FloodGuard menggunakan **Open Source Routing Machine (OSRM)** dengan mengekstrak 436 titik nod jalan sebenar (*turn-by-turn road network*):
-  - **North Zone:** Melalui Jalan Bakti 25/15 → Jalan Persiaran Budiman → **Dewan Kenangan MBSA Seksyen 28**.
-  - **East Zone:** Melalui Jalan Sabar 25/83 → Lorong Sabar → **SK Taman Sri Muda**.
-  - **Central Zone:** Melalui Jalan Makmur 25/64 → Jalan Mewah 25/63 → **Dewan Azalea Seksyen 25**.
-  - **South & West Zones:** Melalui Persiaran Tengku Ampuan keluar terus ke **SK Seksyen 16 Shah Alam**.
+- **Penyelesaian Kejuruteraan & Polisi Evakuasi Selamat (Safe High-Ground Routing):**
+  Semasa banjir besar di Taman Sri Muda (seperti episod Disember 2021), fasiliti dalaman yang rendah (seperti SK Taman Sri Muda dan Dewan Azalea) ditenggelami air sedalam 1.5m - 2.5m (Zon Merah Kritikal). Mengarahkan mangsa masuk ke pusat basin banjir adalah tidak wajar dan membahayakan nyawa. Oleh itu, FloodGuard mengaplikasikan **Safe High-Ground Routing** di mana semua koridor evakuasi membawa mangsa keluar dari lembangan banjir ke Pusat Pemindahan Sementara (PPS) tanah tinggi yang selamat:
+  - **North Zone:** Melalui Persiaran Budiman terus ke **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
+  - **East Zone:** Melalui Persiaran Aman (perimeter ban sungai, mengelak zon merah pusat Sri Muda) → Persiaran Budiman → **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
+  - **Central Zone:** Keluar segera ke utara melalui laluan arteri Persiaran Budiman keluar dari lembangan banjir ke **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
+  - **South Zone:** Melalui sempadan selatan (koridor Jalan Bukit Kemuning) terus ke tanjakan Lebuhraya LKSA → **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
+  - **West Zone:** Melalui Lebuhraya Kemuning-Shah Alam (LKSA) terus ke **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
 
 ---
 
