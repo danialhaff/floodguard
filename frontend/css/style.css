@@ -443,26 +443,74 @@ body {
 
 /* ---- Map Legend (Leaflet Control) ---- */
 .map-legend {
-    background: rgba(12, 17, 32, 0.92) !important;
+    background: rgba(12, 17, 32, 0.94) !important;
     color: #e2e8f0;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-radius: 14px !important;
     font-family: var(--font);
     font-size: 0.75rem;
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(100,120,180,0.15) !important;
-    width: 245px; /* Match weather widget exactly */
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border: 1px solid rgba(100,120,180,0.22) !important;
+    width: 240px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    max-height: calc(100% - 20px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100,120,180,0.35) transparent;
+    transition: all 0.25s ease;
+}
+
+.map-legend::-webkit-scrollbar {
+    width: 4px;
+}
+.map-legend::-webkit-scrollbar-thumb {
+    background: rgba(100,120,180,0.35);
+    border-radius: 4px;
+}
+
+.legend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding-bottom: 2px;
+}
+
+.legend-header:hover .legend-toggle-btn {
+    background: rgba(56, 189, 248, 0.18);
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.35);
+}
+
+.legend-toggle-btn {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px;
+    padding: 2px 6px;
+    line-height: 1;
+    transition: all 0.2s ease;
 }
 
 .legend-title {
     font-weight: 700;
-    margin-bottom: 8px;
     font-size: 0.82rem;
     background: linear-gradient(135deg, #38bdf8, #818cf8);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: 0.02em;
+}
+
+.legend-subtitle {
+    font-weight: 600;
+    margin: 8px 0 6px 0;
+    font-size: 0.74rem;
+    color: #93c5fd;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .legend-item {
@@ -492,7 +540,7 @@ body {
 
 .legend-divider {
     border-top: 1px solid rgba(100,120,180,0.12);
-    margin: 10px 0;
+    margin: 8px 0;
 }
 .legend-note {
     font-size: 0.64rem;

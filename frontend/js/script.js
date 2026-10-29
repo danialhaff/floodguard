@@ -662,28 +662,46 @@ function drawFloodGrid(rainfall) {
 }
 
 // ---- Legend ----
-const legend = L.control({ position: 'bottomright' });
+const legend = L.control({ position: 'bottomleft' });
 legend.onAdd = function () {
     const div = L.DomUtil.create('div', 'map-legend');
+    div.id = 'desktop-map-legend';
     div.innerHTML = `
-        <div class="legend-title">🌊 Water Depth (Est.)</div>
-        <div class="legend-item"><span style="background:#38bdf8"></span> &lt; 0.3m (Ankle / Shallow)</div>
-        <div class="legend-item"><span style="background:#2563eb"></span> 0.3m – 0.7m (Knee / Car Alert)</div>
-        <div class="legend-item"><span style="background:#f59e0b"></span> 0.7m – 1.2m (Waist / Impassable)</div>
-        <div class="legend-item"><span style="background:#ea580c"></span> 1.2m – 1.8m (Chest / Danger)</div>
-        <div class="legend-item"><span style="background:#dc2626"></span> &gt; 1.8m (Critical / Submerged)</div>
-        <div class="legend-divider"></div>
-        <div class="legend-title">🚨 Evacuation Corridors</div>
-        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-north')"><span style="background:#7c3aed"></span> North → Dewan MBSA</div>
-        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-east')"><span style="background:#0891b2"></span> East → SK Sri Muda</div>
-        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-center')"><span style="background:#059669"></span> Central → Dewan Azalea</div>
-        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-south')"><span style="background:#d97706"></span> South → SK Sek16</div>
-        <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-west')"><span style="background:#be185d"></span> West → SK Sek16</div>
-        <div class="legend-note">💡 Click corridor to isolate on map</div>
+        <div class="legend-header" onclick="window.toggleDesktopLegend()" title="Click to collapse / expand">
+            <div class="legend-title" style="margin-bottom:0;">🌊 Map Legend</div>
+            <span class="legend-toggle-btn" id="legend-toggle-icon">▼</span>
+        </div>
+        <div class="legend-content-body" id="legend-content-body">
+            <div class="legend-subtitle">💧 Water Depth (Est.)</div>
+            <div class="legend-item"><span style="background:#38bdf8"></span> &lt; 0.3m (Ankle / Shallow)</div>
+            <div class="legend-item"><span style="background:#2563eb"></span> 0.3m – 0.7m (Knee / Car Alert)</div>
+            <div class="legend-item"><span style="background:#f59e0b"></span> 0.7m – 1.2m (Waist / Impassable)</div>
+            <div class="legend-item"><span style="background:#ea580c"></span> 1.2m – 1.8m (Chest / Danger)</div>
+            <div class="legend-item"><span style="background:#dc2626"></span> &gt; 1.8m (Critical / Submerged)</div>
+            <div class="legend-divider"></div>
+            <div class="legend-subtitle">🚨 Evacuation Corridors</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-north')"><span style="background:#7c3aed"></span> North → Dewan MBSA</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-east')"><span style="background:#0891b2"></span> East → SK Sri Muda</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-center')"><span style="background:#059669"></span> Central → Dewan Azalea</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-south')"><span style="background:#d97706"></span> South → SK Sek16</div>
+            <div class="legend-item legend-clickable" onclick="window.focusZone && window.focusZone('zone-west')"><span style="background:#be185d"></span> West → SK Sek16</div>
+            <div class="legend-note">💡 Click corridor to isolate on map</div>
+        </div>
     `;
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
     return div;
 };
 legend.addTo(map);
+
+window.toggleDesktopLegend = function () {
+    const body = document.getElementById('legend-content-body');
+    const icon = document.getElementById('legend-toggle-icon');
+    if (!body || !icon) return;
+    const isHidden = body.style.display === 'none';
+    body.style.display = isHidden ? 'block' : 'none';
+    icon.textContent = isHidden ? '▼' : '▲';
+};
 
 // ---- Move Weather Widget to Map Control ----
 const weatherControl = L.control({ position: 'bottomright' });
