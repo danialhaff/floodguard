@@ -68,7 +68,7 @@ $$Vulnerability(lat, lng) = w_1 \cdot \text{ProximityToRiver}(lat, lng) + w_2 \c
 - **Penyelesaian Kejuruteraan & Polisi Evakuasi Selamat (Safe High-Ground Routing):**
   Semasa banjir besar di Taman Sri Muda (seperti episod Disember 2021), fasiliti dalaman yang rendah (seperti SK Taman Sri Muda dan Dewan Azalea) ditenggelami air sedalam 1.5m - 2.5m (Zon Merah Kritikal). Mengarahkan mangsa masuk ke pusat basin banjir adalah tidak wajar dan membahayakan nyawa. Oleh itu, FloodGuard mengaplikasikan **Safe High-Ground Routing** di mana semua koridor evakuasi membawa mangsa keluar dari lembangan banjir ke Pusat Pemindahan Sementara (PPS) tanah tinggi yang selamat:
   - **North Zone:** Melalui Persiaran Budiman terus ke **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
-  - **East Zone:** Melalui Persiaran Aman (perimeter ban sungai, mengelak zon merah pusat Sri Muda) → Persiaran Budiman → **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
+  - **East Zone:** Melalui Jalan Sepadu 25/123 terus keluar ke Lebuhraya Shah Alam (KESAS E5) melalui Persimpangan HICOM → Persiaran Kuala Selangor (Laluan 3214) → **Dewan Kenangan MBSA Seksyen 28** (Laluan Luar Bebas Banjir: 100% Mengelak Lembangan & Zon Merah Sri Muda).
   - **Central Zone:** Keluar segera ke utara melalui laluan arteri Persiaran Budiman keluar dari lembangan banjir ke **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
   - **South Zone:** Melalui sempadan selatan (koridor Jalan Bukit Kemuning) terus ke tanjakan Lebuhraya LKSA → **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
   - **West Zone:** Melalui Lebuhraya Kemuning-Shah Alam (LKSA) terus ke **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
