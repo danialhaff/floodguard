@@ -70,8 +70,8 @@ $$Vulnerability(lat, lng) = w_1 \cdot \text{ProximityToRiver}(lat, lng) + w_2 \c
   - **North Zone:** Melalui Persiaran Budiman terus ke **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
   - **East Zone:** Melalui Jalan Sepadu 25/123 terus keluar ke Lebuhraya Shah Alam (KESAS E5) melalui Persimpangan HICOM → Persiaran Kuala Selangor (Laluan 3214) → **Dewan Kenangan MBSA Seksyen 28** (Laluan Luar Bebas Banjir: 100% Mengelak Lembangan & Zon Merah Sri Muda).
   - **Central Zone:** Keluar segera ke utara melalui laluan arteri Persiaran Budiman keluar dari lembangan banjir ke **Dewan Kenangan MBSA Seksyen 28** (Tanah Tinggi).
-  - **South Zone:** Melalui sempadan selatan (koridor Jalan Bukit Kemuning) terus ke tanjakan Lebuhraya LKSA → **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
-  - **West Zone:** Melalui Lebuhraya Kemuning-Shah Alam (LKSA) terus ke **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
+  - **South Zone:** Melalui jalan perimeter selatan (Jalan Jitu 25/125 ➔ Jalan Bukit Kemuning) terus ke susur masuk Lebuhraya LKSA (E13) tanpa memasuki lembangan tengah Sri Muda → **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
+  - **West Zone:** Terus menyusur masuk ke Lebuhraya LKSA (E13) Northbound di sempadan barat Sri Muda merentasi jambatan tinggi Sungai Klang → **SK Seksyen 16 Shah Alam** (Tanah Tinggi).
 
 ---
 
