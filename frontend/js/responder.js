@@ -39,13 +39,20 @@ const TSM_BOUNDARY = [
 ];
 
 const EVAC_ZONES = [
-    { name: 'North Zone', color: '#7c3aed', centroid: [3.0375, 101.5340] },
-    { name: 'East Zone', color: '#0891b2', centroid: [3.0308, 101.5450] },
-    { name: 'Central Zone', color: '#059669', centroid: [3.0310, 101.5360] },
-    { name: 'South Zone', color: '#d97706', centroid: [3.0230, 101.5370] },
-    { name: 'West Zone', color: '#be185d', centroid: [3.0290, 101.5265] }
+    { id: "zone-north", name: "North Zone", color: "#7c3aed", centroid: [3.0375, 101.5340] },
+    { id: "zone-east", name: "East Zone", color: "#0891b2", centroid: [3.0298, 101.5428] },
+    { id: "zone-center", name: "Central Zone", color: "#059669", centroid: [3.0330, 101.5342] },
+    { id: "zone-south", name: "South Zone", color: "#d97706", centroid: [3.0205, 101.5338] },
+    { id: "zone-west", name: "West Zone", color: "#be185d", centroid: [3.0290, 101.5265] }
 ];
 
+const PPS_COORDS_LOOKUP = {
+    'Dewan Azalea Seksyen 25': { lat: 3.0336, lng: 101.5367, type: 'secondary' },
+    'SK Taman Sri Muda': { lat: 3.0315, lng: 101.5398, type: 'secondary' },
+    'Dewan Kenangan MBSA, Seksyen 28': { lat: 3.0487, lng: 101.5421, type: 'primary' },
+    'Dewan Kenangan MBSA Seksyen 28': { lat: 3.0487, lng: 101.5421, type: 'primary' },
+    'SK Seksyen 16 Shah Alam': { lat: 3.0576, lng: 101.5189, type: 'primary' }
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     initMobileSidebar();
@@ -103,38 +110,29 @@ function initMap() {
 }
 
 function drawMapBoundaries() {
-    // 1. TSM Boundary Outline
+    // 1. TSM Boundary Outline with Taman Sri Muda center badge (100% match with script.js)
     L.polygon(TSM_BOUNDARY, {
         color: '#818cf8',
-        weight: 2,
-        dashArray: '5, 8',
+        weight: 2.5,
+        opacity: 0.8,
+        dashArray: '8, 5',
         fillColor: 'transparent',
         interactive: false
-    }).addTo(map);
+    }).addTo(map).bindTooltip('Taman Sri Muda', {
+        permanent: true,
+        direction: 'center',
+        className: 'area-label'
+    });
 
-    // 2. Zone Labels
+    // 2. Zone Labels (100% match with script.js)
     EVAC_ZONES.forEach(zone => {
-        const markerHtml = `
-            <div style="
-                background: rgba(15, 23, 42, 0.8);
-                border: 2px solid ${zone.color};
-                color: ${zone.color};
-                padding: 4px 12px;
-                border-radius: 12px;
-                font-size: 0.75rem;
-                font-weight: 700;
-                white-space: nowrap;
-                backdrop-filter: blur(4px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-                transform: translate(-50%, -50%);
-            ">${zone.name}</div>
-        `;
-        const icon = L.divIcon({
-            className: 'custom-zone-label',
-            html: markerHtml,
-            iconSize: [0,0]
+        const zoneIcon = L.divIcon({
+            className: '',
+            html: `<div class="zone-label" style="border-color:${zone.color};color:${zone.color};cursor:default;" title="${zone.name}">${zone.name}</div>`,
+            iconSize: [84, 24],
+            iconAnchor: [42, 12]
         });
-        L.marker(zone.centroid, { icon, interactive: false }).addTo(map);
+        L.marker(zone.centroid, { icon: zoneIcon, interactive: false }).addTo(map);
     });
 }
 
@@ -261,21 +259,26 @@ function renderPPS(ppsList) {
         container.appendChild(card);
 
         // Add to map
-        if (pps.lat && pps.lng) {
-            const type = pps.name.includes('SK') ? 'secondary' : 'primary';
+        const lookup = PPS_COORDS_LOOKUP[pps.name] || {};
+        const lat = pps.lat || lookup.lat;
+        const lng = pps.lng || lookup.lng;
+        if (lat && lng) {
+            const type = lookup.type || (pps.name.includes('SK') ? 'secondary' : 'primary');
             const iconEmoji = type === 'primary' ? '🏥' : '🏫';
             const icon = L.divIcon({
                 className: '',
                 html: `<div class="pps-marker ${type}"><span>${iconEmoji}</span></div>`,
-                iconSize: [38, 38], iconAnchor: [19, 19]
+                iconSize: type === 'primary' ? [38, 38] : [34, 34],
+                iconAnchor: type === 'primary' ? [19, 19] : [17, 17]
             });
-            const marker = L.marker([pps.lat, pps.lng], { icon })
+            const marker = L.marker([lat, lng], { icon })
                 .bindPopup(`
                     <div class="pps-popup">
-                        <div class="pps-popup-title" style="font-weight: 700; color: #f8fafc; margin-bottom: 4px;">${pps.name}</div>
-                        <div style="font-size: 0.85rem; color: #94a3b8;">Occupancy: ${pax} / ${cap} Pax</div>
+                        <div class="pps-popup-title" style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">${pps.name}</div>
+                        <div class="pps-popup-tag ${type}">${type === 'primary' ? '🔴 Primary Centre' : '🟡 Secondary Centre'}</div>
+                        <div style="font-size: 0.85rem; color: #475569; margin-top:4px;">Occupancy: <b>${pax} / ${cap} Pax</b> (${Math.round(pct)}%)</div>
                     </div>
-                `);
+                `, { maxWidth: 260 });
             ppsLayer.addLayer(marker);
         }
     });

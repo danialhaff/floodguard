@@ -224,7 +224,18 @@ def get_admin_zones(db: Session = Depends(database.get_db)):
 @app.get("/admin/pps")
 def get_admin_pps(db: Session = Depends(database.get_db)):
     pps = db.query(models.PPSLocation).all()
-    return [{"id": p.id, "name": p.name, "capacity": p.capacity, "current_pax": p.current_pax} for p in pps]
+    results = []
+    for p in pps:
+        geom_shape = to_shape(p.geom) if p.geom else None
+        results.append({
+            "id": p.id,
+            "name": p.name,
+            "capacity": p.capacity,
+            "current_pax": p.current_pax,
+            "lat": geom_shape.y if geom_shape else None,
+            "lng": geom_shape.x if geom_shape else None
+        })
+    return results
 
 @app.put("/admin/pps/{pps_id}/occupancy")
 def update_pps_occupancy(pps_id: int, pps_update: PPSUpdate, db: Session = Depends(database.get_db)):
