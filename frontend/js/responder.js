@@ -172,7 +172,85 @@ async function loadPPS() {
     }
 }
 
+let currentSOSList = [];
+let dispatchBannerTimer = null;
+
+function getZoneForCoord(lat, lng) {
+    if (!lat || !lng) return { name: "Central Zone", color: "#059669" };
+    let closestZone = EVAC_ZONES[0];
+    let minD = Infinity;
+    for (const z of EVAC_ZONES) {
+        const d = Math.hypot(lat - z.centroid[0], lng - z.centroid[1]);
+        if (d < minD) {
+            minD = d;
+            closestZone = z;
+        }
+    }
+    return closestZone;
+}
+
+function triggerMapHighlight(lat, lng, zoneName, victimName, isDispatched = true) {
+    if (!map || !lat || !lng) return;
+
+    // Fly to coordinates smoothly
+    map.flyTo([lat, lng], 16, { animate: true, duration: 1.1 });
+
+    // Show temporary radar ping on map
+    const pingColor = isDispatched ? '#0284c7' : '#ef4444';
+    const pingCircle = L.circle([lat, lng], {
+        radius: 25,
+        color: pingColor,
+        fillColor: pingColor,
+        fillOpacity: 0.5,
+        weight: 3
+    }).addTo(map);
+
+    let currentR = 25;
+    let currentOp = 0.5;
+    const interval = setInterval(() => {
+        currentR += 22;
+        currentOp -= 0.035;
+        if (currentOp <= 0) {
+            clearInterval(interval);
+            map.removeLayer(pingCircle);
+        } else {
+            pingCircle.setRadius(currentR);
+            pingCircle.setStyle({ fillOpacity: Math.max(0, currentOp), opacity: Math.max(0, currentOp * 2) });
+        }
+    }, 40);
+
+    // Show on-map banner indicator
+    const banner = document.getElementById('map-dispatch-banner');
+    if (banner) {
+        const titleEl = document.getElementById('dispatch-banner-title');
+        const subEl = document.getElementById('dispatch-banner-sub');
+        if (titleEl) titleEl.textContent = isDispatched ? `En route to ${victimName}` : `Target: ${victimName}`;
+        if (subEl) subEl.textContent = `Kawasan: ${zoneName} (Taman Sri Muda)`;
+        banner.style.display = 'flex';
+
+        if (dispatchBannerTimer) clearTimeout(dispatchBannerTimer);
+        dispatchBannerTimer = setTimeout(() => {
+            banner.style.animation = 'bannerDrop 0.3s ease-in reverse forwards';
+            setTimeout(() => {
+                banner.style.display = 'none';
+                banner.style.animation = '';
+            }, 300);
+        }, 5000);
+    }
+}
+
+function focusSOS(id) {
+    const sos = currentSOSList.find(s => s.id === id);
+    if (!sos || !sos.lat || !sos.lng) return;
+    const zone = getZoneForCoord(sos.lat, sos.lng);
+    triggerMapHighlight(sos.lat, sos.lng, zone.name, sos.name, sos.status === 'Dispatched');
+    if (sosMarkers[id]) {
+        setTimeout(() => sosMarkers[id].openPopup(), 600);
+    }
+}
+
 function renderSOS(sosList) {
+    currentSOSList = sosList;
     const container = document.getElementById('sos-list');
     container.innerHTML = '';
     sosLayer.clearLayers();
@@ -186,39 +264,82 @@ function renderSOS(sosList) {
     }
 
     sosList.forEach(sos => {
-        if (sos.status === 'Pending') pending++;
+        const isDispatched = (sos.status === 'Dispatched');
+        if (!isDispatched) pending++;
         else dispatched++;
+
+        const zone = getZoneForCoord(sos.lat, sos.lng);
+        let date = new Date(sos.timestamp);
+        let timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
         // Add to list
         const card = document.createElement('div');
-        card.className = `sos-card ${sos.status === 'Dispatched' ? 'dispatched' : ''}`;
-        
-        let date = new Date(sos.timestamp);
-        let timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        card.className = `sos-card ${isDispatched ? 'dispatched' : ''}`;
+        card.title = `Click to view on map: ${sos.name} (${zone.name})`;
+        card.onclick = (e) => {
+            if (e.target.closest('.btn-dispatch')) return;
+            focusSOS(sos.id);
+        };
 
         card.innerHTML = `
             <div class="sos-header">
                 <div>
                     <div class="sos-name">${sos.name}</div>
                     <div class="sos-phone">📞 ${sos.phone}</div>
-                    <div class="sos-coord" style="color: #94a3b8; font-size: 0.8rem; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                        ${sos.lat.toFixed(5)}, ${sos.lng.toFixed(5)}
+                    <div class="sos-zone-tag" style="border-color:${zone.color};color:${zone.color};background:${zone.color}18;margin-top:4px;">
+                        📍 ${zone.name}
                     </div>
                 </div>
-                <div class="sos-time">${timeStr}</div>
+                <div style="text-align: right; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                    <div class="sos-time">${timeStr}</div>
+                    ${isDispatched 
+                        ? `<div class="badge-dispatched">✓ Dispatched</div>`
+                        : `<button class="btn-dispatch" onclick="dispatchRescue(${sos.id}, event)"><span>🚒</span> Dispatch</button>`
+                    }
+                </div>
             </div>
-            ${sos.status === 'Pending' 
-                ? `<button class="btn-dispatch" onclick="dispatchRescue(${sos.id})">Dispatch Unit</button>`
-                : `<div class="badge-dispatched">✓ Dispatched</div>`
-            }
+            <div class="sos-coord" style="color: #94a3b8; font-size: 0.78rem; margin-top: 2px; display: flex; align-items: center; gap: 4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                ${sos.lat ? sos.lat.toFixed(5) : '0.00000'}, ${sos.lng ? sos.lng.toFixed(5) : '0.00000'}
+            </div>
         `;
         container.appendChild(card);
 
-        // Add to map
-        if (sos.status === 'Pending' && sos.lat && sos.lng) {
-            const icon = L.divIcon({ className: 'sos-marker', iconSize: [16,16] });
-            const marker = L.marker([sos.lat, sos.lng], {icon}).bindPopup(`<b>${sos.name}</b><br>${sos.phone}`);
+        // Add to map - SHOW BOTH PENDING AND DISPATCHED!
+        if (sos.lat && sos.lng) {
+            const statusClass = isDispatched ? 'dispatched' : 'pending';
+            const statusIcon = isDispatched ? '🚒' : '🚨';
+            const icon = L.divIcon({
+                className: '',
+                html: `
+                    <div class="sos-beacon ${statusClass}" title="${isDispatched ? 'Dispatched Unit' : 'Emergency SOS'}: ${sos.name}">
+                        <div class="sos-pin">${statusIcon}</div>
+                        <div class="sos-tag">
+                            <span>${sos.name}</span>
+                            <span class="sos-zone-pill">${zone.name}</span>
+                        </div>
+                    </div>
+                `,
+                iconSize: [120, 36],
+                iconAnchor: [17, 18]
+            });
+
+            const popupHtml = `
+                <div class="sos-popup">
+                    <div class="sos-popup-status ${statusClass}">
+                        ${isDispatched ? '🚒 RESCUE UNIT DISPATCHED' : '🚨 EMERGENCY SOS PENDING'}
+                    </div>
+                    <div class="sos-popup-title">${sos.name}</div>
+                    <div class="sos-popup-zone">📍 <b>${zone.name}</b> (Taman Sri Muda)</div>
+                    <div class="sos-popup-phone">📞 <a href="tel:${sos.phone}">${sos.phone}</a></div>
+                    <div class="sos-popup-time">🕒 Masa: ${timeStr} | 🌐 ${sos.lat.toFixed(5)}, ${sos.lng.toFixed(5)}</div>
+                    ${!isDispatched ? `<button class="sos-popup-btn" onclick="dispatchRescue(${sos.id})">🚒 Dispatch Rescue Unit Now</button>` : ''}
+                </div>
+            `;
+
+            const marker = L.marker([sos.lat, sos.lng], { icon })
+                .bindPopup(popupHtml, { maxWidth: 280 });
+            
             sosLayer.addLayer(marker);
             sosMarkers[sos.id] = marker;
         }
@@ -284,7 +405,18 @@ function renderPPS(ppsList) {
     });
 }
 
-async function dispatchRescue(id) {
+async function dispatchRescue(id, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    // Find SOS and trigger immediate map highlight and indicator
+    const targetSOS = currentSOSList.find(s => s.id === id);
+    if (targetSOS && targetSOS.lat && targetSOS.lng) {
+        const zone = getZoneForCoord(targetSOS.lat, targetSOS.lng);
+        triggerMapHighlight(targetSOS.lat, targetSOS.lng, zone.name, targetSOS.name, true);
+    }
+
     try {
         const res = await fetch(`${API_BASE}/admin/sos/${id}/status`, {
             method: 'PUT',
@@ -294,14 +426,22 @@ async function dispatchRescue(id) {
         
         if (res.ok) {
             showToast('Rescue unit dispatched successfully!', 'success');
-            loadData();
+            await loadData();
+            if (targetSOS && targetSOS.lat && targetSOS.lng) {
+                setTimeout(() => {
+                    if (sosMarkers[id]) sosMarkers[id].openPopup();
+                }, 700);
+            }
         } else {
             showToast('Failed to update status', 'error');
         }
     } catch(err) {
-        showToast('Network error (Mocking success)', 'success');
-        // Mock success for UI demo
-        setTimeout(() => loadData(), 500);
+        showToast('Rescue unit dispatched (Mock mode)', 'success');
+        if (targetSOS) targetSOS.status = 'Dispatched';
+        renderSOS(currentSOSList);
+        setTimeout(() => {
+            if (sosMarkers[id]) sosMarkers[id].openPopup();
+        }, 700);
     }
 }
 

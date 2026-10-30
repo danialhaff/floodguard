@@ -197,16 +197,35 @@
     box-shadow: 0 4px 14px rgba(239, 68, 68, 0.08);
     backdrop-filter: blur(10px);
     transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
 }
 .sos-card:hover {
-    border-color: rgba(239, 68, 68, 0.6);
-    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(239, 68, 68, 0.7);
+    background: rgba(30, 41, 59, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 .sos-card.dispatched {
-    border-color: rgba(16, 185, 129, 0.35);
-    background: rgba(15, 23, 42, 0.55);
-    opacity: 0.8;
+    border-color: rgba(14, 165, 233, 0.4);
+    background: rgba(15, 23, 42, 0.65);
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.08);
+}
+.sos-card.dispatched:hover {
+    border-color: rgba(14, 165, 233, 0.8);
+}
+
+.sos-zone-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid;
+    width: fit-content;
 }
 
 .sos-header {
@@ -245,6 +264,10 @@
     transition: all 0.2s ease;
     margin-top: 4px;
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 .btn-dispatch:hover {
     background: linear-gradient(135deg, #dc2626, #b91c1c);
@@ -257,15 +280,18 @@
 }
 
 .badge-dispatched {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(14, 165, 233, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(14, 165, 233, 0.35);
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 0.72rem;
     font-weight: 600;
     align-self: flex-start;
     margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 /* PPS Card */
@@ -317,19 +343,212 @@
     padding: 24px;
 }
 
-/* ---- Map Markers ---- */
-.sos-marker {
-    background: #ef4444;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4);
-    animation: mapPulse 1.5s infinite;
+/* ---- Map Dispatch Overlay Banner ---- */
+.map-dispatch-banner {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: rgba(10, 15, 30, 0.94);
+    border: 2px solid #0284c7;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 24px rgba(2, 132, 199, 0.45);
+    border-radius: 14px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    backdrop-filter: blur(16px);
+    animation: bannerDrop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto;
+    cursor: pointer;
+    min-width: 290px;
 }
-@keyframes mapPulse {
-    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-    70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+@keyframes bannerDrop {
+    from { opacity: 0; transform: translate(-50%, -24px) scale(0.95); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+.map-dispatch-banner .banner-icon {
+    font-size: 28px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 8px rgba(2, 132, 199, 0.5));
+}
+.map-dispatch-banner .banner-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.map-dispatch-banner .banner-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #38bdf8;
+    text-transform: uppercase;
+}
+.map-dispatch-banner .banner-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+.map-dispatch-banner .banner-sub {
+    font-size: 0.76rem;
+    color: #94a3b8;
+}
+
+/* ---- SOS Beacon Map Markers ---- */
+.sos-beacon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    pointer-events: auto;
+    transform: translate(-16px, -16px);
+}
+.sos-beacon .sos-pin {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 2px solid #ffffff;
+}
+.sos-beacon:hover .sos-pin {
+    transform: scale(1.15);
+}
+
+.sos-beacon.pending .sos-pin {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
+    animation: sosAlarmPulse 1.4s infinite;
+}
+.sos-beacon.dispatched .sos-pin {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    box-shadow: 0 0 16px rgba(2, 132, 199, 0.7);
+}
+
+.sos-beacon .sos-tag {
+    background: rgba(12, 17, 32, 0.88);
+    border: 1.5px solid #ef4444;
+    color: #f8fafc;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+}
+.sos-beacon.dispatched .sos-tag {
+    border-color: #0284c7;
+    color: #e0f2fe;
+}
+
+.sos-zone-pill {
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.sos-beacon.pending .sos-zone-pill {
+    background: rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+}
+.sos-beacon.dispatched .sos-zone-pill {
+    background: rgba(2, 132, 199, 0.25);
+    color: #7dd3fc;
+}
+
+@keyframes sosAlarmPulse {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.85); }
+    70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
     100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* SOS Map Popup */
+.sos-popup {
+    font-family: var(--font, 'Inter', sans-serif);
+    min-width: 220px;
+    color: #0f172a;
+}
+.sos-popup-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+.sos-popup-status.pending {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+.sos-popup-status.dispatched {
+    background: #f0f9ff;
+    color: #0284c7;
+    border: 1px solid #bae6fd;
+}
+.sos-popup-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #0f172a;
+}
+.sos-popup-zone {
+    font-size: 0.80rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.sos-popup-phone {
+    font-size: 0.80rem;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+.sos-popup-phone a {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 600;
+}
+.sos-popup-time {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin-top: 6px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 4px;
+}
+.sos-popup-btn {
+    width: 100%;
+    margin-top: 8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+}
+.sos-popup-btn:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
 }
 
 .pps-marker {
